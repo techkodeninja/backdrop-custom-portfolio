@@ -16,15 +16,16 @@
             "BCP\\": "app/"
 		},
         "files": [
-            "app/framework.php",
             "app/functions-options.php",
             "app/functions-rewrites.php",
-            "app/functions-scripts.php"
+            "app/functions-scripts.php",
+            "app/framework.php"
         ]
     },
     "require": {
-		"php": ">=7.1",
-		"backdrop-dev/framework": "dev-develop",
-        "backdrop-dev/mix": "dev-develop"
+		"php": ">=7.4",
+		"backdrop-dev/framework": "^2.0",
+		"backdrop-dev/contracts": "^1.0",
+		"backdrop-dev/mix": "dev-develop#d06867563d0bc137773976ba7d6259fa5623fce5"
 	}
 }

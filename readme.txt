@@ -2,7 +2,7 @@
 
 Contributors: benlumia007
 Tags: portfolio
-Require PHP: 7.0
+Requires PHP: 7.4
 
 A complete portfolio solution for creative people.
 

@@ -35,7 +35,7 @@ class Component implements Bootable {
 
 		// Create the settings page.
 		$this->settings_page = add_submenu_page(
-			'edit.php?post_type=' . 'portfolio',
+			'edit.php?post_type=' . bcp_get_setting( 'portfolio_type' ),
 			esc_html__( 'Portfolio Settings', 'backdrop-custom-portfolio' ),
 			esc_html__( 'Settings',           'backdrop-custom-portfolio' ),
 			'manage_options',

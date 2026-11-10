@@ -57,7 +57,7 @@ function bcp_get_setting( string $setting ): string {
 	$defaults = bcp_get_default_settings();
 	$settings = wp_parse_args( get_option( 'bcp_settings', $defaults ), $defaults );
 
-	return $settings[$setting] ?? false;
+	return isset( $settings[ $setting ] ) ? (string) $settings[ $setting ] : '';
 }
 
 /**

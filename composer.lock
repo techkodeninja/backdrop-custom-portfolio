@@ -4,24 +4,24 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "7735577bc3e3d3cb517d2b0903298ed2",
+    "content-hash": "898fc3105f2f76d9e3ff5b164a6795eb",
     "packages": [
         {
             "name": "backdrop-dev/contracts",
-            "version": "1.0",
+            "version": "v1.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/backdrop-dev/contracts.git",
-                "reference": "4dd506178abea2fc83cf80531ebc7af96deb85e8"
+                "reference": "16c11a6041b09904b55ae99b445ab445d060f4e6"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/backdrop-dev/contracts/zipball/4dd506178abea2fc83cf80531ebc7af96deb85e8",
-                "reference": "4dd506178abea2fc83cf80531ebc7af96deb85e8",
+                "url": "https://api.github.com/repos/backdrop-dev/contracts/zipball/16c11a6041b09904b55ae99b445ab445d060f4e6",
+                "reference": "16c11a6041b09904b55ae99b445ab445d060f4e6",
                 "shasum": ""
             },
             "require": {
-                "php": ">=7.1"
+                "php": ">=7.4"
             },
             "type": "library",
             "autoload": {
@@ -29,7 +29,6 @@
                     "Backdrop\\Contracts\\": "src"
                 }
             },
-            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "GPL-2.0-or-later"
             ],
@@ -48,40 +47,38 @@
                 "wordpress"
             ],
             "support": {
-                "issues": "https://github.com/benlumia007/backdrop-contracts/issues",
-                "source": "https://github.com/backdrop-dev/contracts/tree/1.0"
+                "issues": "https://github.com/benlumia007/backdrop-contracts/issues"
             },
-            "time": "2024-07-16T18:06:26+00:00"
+            "time": "2026-11-08T04:33:16+00:00",
+            "notification-url": "https://packagist.org/downloads/"
         },
         {
             "name": "backdrop-dev/framework",
-            "version": "dev-develop",
+            "version": "v2.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/backdrop-dev/framework.git",
-                "reference": "850999224860bf53ff0952a0841de41c24db4b13"
+                "reference": "d033498def2543bdb340580b522f2b32aee9e97c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/backdrop-dev/framework/zipball/850999224860bf53ff0952a0841de41c24db4b13",
-                "reference": "850999224860bf53ff0952a0841de41c24db4b13",
+                "url": "https://api.github.com/repos/backdrop-dev/framework/zipball/d033498def2543bdb340580b522f2b32aee9e97c",
+                "reference": "d033498def2543bdb340580b522f2b32aee9e97c",
                 "shasum": ""
             },
             "require": {
                 "backdrop-dev/contracts": "^1.0",
                 "php": ">=7.4"
             },
-            "default-branch": true,
             "type": "library",
             "autoload": {
-                "files": [
-                    "src/functions-helpers.php"
-                ],
                 "psr-4": {
                     "Backdrop\\": "src/"
-                }
+                },
+                "files": [
+                    "src/functions-helpers.php"
+                ]
             },
-            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "GPL-2.0-or-later"
             ],
@@ -99,11 +96,8 @@
                 "classicpress",
                 "wordpress"
             ],
-            "support": {
-                "issues": "https://github.com/backdrop-dev/framework/issues",
-                "source": "https://github.com/backdrop-dev/framework/tree/develop"
-            },
-            "time": "2024-08-11T03:48:27+00:00"
+            "time": "2026-11-08T04:54:54+00:00",
+            "notification-url": "https://packagist.org/downloads/"
         },
         {
             "name": "backdrop-dev/mix",
@@ -125,14 +119,13 @@
             "default-branch": true,
             "type": "library",
             "autoload": {
-                "files": [
-                    "src/functions-helpers.php"
-                ],
                 "psr-4": {
                     "Backdrop\\Mix\\": "src/"
-                }
+                },
+                "files": [
+                    "src/functions-helpers.php"
+                ]
             },
-            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "GPL-2.0-or-later"
             ],
@@ -150,24 +143,20 @@
                 "classicpress",
                 "wordpress"
             ],
-            "support": {
-                "issues": "https://github.com/backdrop-dev/mix/issues",
-                "source": "https://github.com/backdrop-dev/mix/tree/develop"
-            },
-            "time": "2024-07-17T18:43:56+00:00"
+            "time": "2025-11-07T00:16:32+00:00",
+            "notification-url": "https://packagist.org/downloads/"
         }
     ],
     "packages-dev": [],
     "aliases": [],
     "minimum-stability": "stable",
     "stability-flags": {
-        "backdrop-dev/framework": 20,
         "backdrop-dev/mix": 20
     },
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {
-        "php": ">=7.1"
+        "php": ">=7.4"
     },
     "platform-dev": [],
     "plugin-api-version": "2.6.0"
