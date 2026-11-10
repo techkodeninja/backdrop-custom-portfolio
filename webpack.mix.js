@@ -7,11 +7,11 @@
  *
  * @link https://laravel.com/docs/5.6/mix
  *
- * @package   Silver Quantum
+ * @package   Backdrop Custom Portfolio
  * @author    Benjamin Lu <benlumia007@gmail.com>
  * @copyright 2014-2023 Benjamin Lu
  * @license   https://www.gnu.org/licenses/gpl-2.0.html GPL-2.0-or-later
- * @link      https://luthemes/portfolio/silver-quantum
+ * @link      https://github.com/techkodeninja/backdrop-custom-portfolio
  */
 
  // Import All Required Packages

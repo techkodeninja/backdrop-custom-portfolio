@@ -5,7 +5,7 @@
  * necessary files and folders or zipping. If you need to make any modifications,
  * you can edit the `files` or `folders` variables.
  *
- * @package   Silver Quantum
+ * @package   Backdrop Custom Portfolio
  * @author    Benjamin Lu <benlumia007k@gmail.com>
  * @copyright 2014-2023. Benjamin Lu
  * @license   https://www.gnu.org/licenses/gpl-2.0.html

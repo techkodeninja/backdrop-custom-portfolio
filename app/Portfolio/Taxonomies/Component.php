@@ -119,7 +119,7 @@ class Component implements Bootable {
 			'show_in_nav_menus' => true,
 			'show_tagcloud'     => true,
 			'show_admin_column' => true,
-			'hierarchical'      => true,
+			'hierarchical'      => false,
 			'show_in_rest'      => true,
 		];
 
