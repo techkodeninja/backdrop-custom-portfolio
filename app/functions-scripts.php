@@ -10,10 +10,16 @@
  */
 
 namespace BCP;
-use function Backdrop\Mix\pluginAsset;
 
 add_action( 'admin_enqueue_scripts', function() {
 
-    wp_enqueue_style( 'creativity-screen', pluginAsset( 'assets/css/screen.css' ), null, null );
+    $file = plugin_dir_path( __DIR__ ) . 'public/assets/css/screen.css';
+
+    wp_enqueue_style(
+        'creativity-screen',
+        plugin_dir_url( __DIR__ ) . 'public/assets/css/screen.css',
+        [],
+        file_exists( $file ) ? filemtime( $file ) : null
+    );
 } );
 
