@@ -6,36 +6,29 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+## [1.1.0] - 2026-11-17
+
 ### Added
-- Merging a `release/x.y.z` pull request into `develop` now tags and publishes the release and attaches the plugin ZIP. The workflow checks that the plugin header, `readme.txt` and `package.json` versions match the branch, that the changelog has a section for it, and that the bundled framework guards its helper functions.
-- FAQ in `readme.txt`, and `Requires CP`.
+- Extra post types. Add more portfolio-style post types (for example Photography or Themes) from **Portfolio → Settings → Extra Post Types**, or in code with the `bcp/post_types` filter. They share the portfolio categories and tags.
 - A Menu setting for each extra post type: under the Portfolio menu (the default), its own top-level menu, or hidden from the menu.
-- Every portfolio post type is now listed in the "At a Glance" dashboard widget, including ones with no published items yet.
-- Extra post types. Add more portfolio-style post types (for example Photography) from **Portfolio → Settings**, or in code with the `bcp/post_types` filter. They share the portfolio categories and tags.
+- Every portfolio post type is listed in the "At a Glance" dashboard widget, including ones with no published items yet.
 - Excerpt and page attributes (menu order) support on portfolio post types.
 - Labels for the "published", "updated", "scheduled" and "reverted to draft" notices, plus archives and attributes.
-- `uninstall.php`, which removes the plugin's options when it is deleted.
-- `LICENSE` file.
-
-### Fixed
-- The Extra Post Types table on the settings page had its headers flush against the edge and uneven padding, because ClassicPress's settings page styles leaked into it. Cells now have even padding and equal column widths.
-- Fatal error "Undefined constant TEMPLATEPATH" on activation: the framework now boots on `after_setup_theme`, after the theme is set up, and reuses a Backdrop theme's application when there is one.
+- A FAQ in `readme.txt`, `Requires CP`, a `LICENSE` file, and `uninstall.php`, which removes the plugin's options when it is deleted.
+- Merging a `release/x.y.z` pull request into `develop` now tags and publishes the release and attaches the plugin ZIP.
 
 ### Changed
-- `composer.lock` is no longer committed (the framework is resolved from `composer.json`), as in Prismatic.
-- Extra post types now appear as submenu items under the main Portfolio menu instead of as their own top-level menus.
-- Requires `backdrop-dev/framework` `^1.0.1` (the 1.x line that Backdrop themes such as Prismatic use) instead of `^2.0`. Two copies of the framework from different lines can't share one request: the 2.x copy loaded first and broke the theme. The separate `backdrop-dev/contracts` package is no longer needed because 1.x ships its contracts.
+- Requires `backdrop-dev/framework` `^1.0.1` (the 1.x line that Backdrop themes such as Prismatic use) instead of `^2.0`. Two copies of the framework from different lines can't share one request, so the plugin must use the same line as the theme. The separate `backdrop-dev/contracts` package is no longer needed because 1.x ships its contracts.
+- The framework boots on `after_setup_theme`, after the theme is set up, and reuses a Backdrop theme's application when there is one.
 - A missing `vendor/` folder now shows an admin notice instead of a fatal error.
 - Translations load from `public/lang` (`Domain Path` corrected).
 - The rewrite base is sanitized as a slug and can't use reserved slugs (such as `page` and `category`).
 - Rewrite rules are flushed once on the next request after the settings change, instead of while rendering the settings page.
 - The admin stylesheet handle is now `bcp-admin` and only loads on portfolio list screens.
 - The thumbnail column now shows the right image for each row and sits after the title.
-- The release workflow uses current actions, the built-in `GITHUB_TOKEN`, and no SSH key.
-- Replaced Laravel Mix with Vite for compiling `resources/scss/screen.scss` to `public/assets/css/screen.css`.
-- Replaced `webpack.mix.export.js` with `scripts/export.mjs` for building the release folder.
-- The admin stylesheet is now enqueued directly and versioned with the file's modified time.
-- npm scripts: `watch` is now `dev` (`vite build --watch`), and `prod` runs `vite build`.
+- `composer.lock` is no longer committed; the framework is resolved from `composer.json`.
+- Assets are built with Vite instead of Laravel Mix: `resources/scss/screen.scss` compiles to `public/assets/css/screen.css`, `scripts/export.mjs` builds the release folder, and the npm script `watch` is now `dev`. The admin stylesheet is enqueued directly and versioned with the file's modified time.
+- The release workflow uses current actions and the built-in `GITHUB_TOKEN`.
 
 ### Removed
 - `laravel-mix` and `sass-loader` dev dependencies, `webpack.mix.js` and `public/mix-manifest.json`.

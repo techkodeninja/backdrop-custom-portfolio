@@ -7,7 +7,7 @@
  * Author URI:  https://luthemes.com
  * Text Domain: backdrop-custom-portfolio
  * Domain Path: /public/lang
- * Version:     1.0.3
+ * Version:     1.1.0
  * Requires CP: 1.0
  * Requires PHP: 7.4
  *
