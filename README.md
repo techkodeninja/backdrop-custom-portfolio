@@ -16,7 +16,7 @@ A portfolio management plugin for ClassicPress, built for creative people such a
 
 ## Multiple post types
 
-Go to **Portfolio → Settings → Extra Post Types** and add a slug (used in the URL), a singular name and a plural name. Each extra type is listed under the Portfolio menu and gets its own archive at `/slug/`, and shares the portfolio categories and tags. Clear a row's slug and save to remove it. Posts are never deleted when a type is removed.
+Go to **Portfolio → Settings → Extra Post Types** and add a slug (used in the URL), a singular name and a plural name. Each extra type is listed under the Portfolio menu by default (a Menu setting also lets it have its own top-level menu or be hidden) and gets its own archive at `/slug/`, and shares the portfolio categories and tags. Clear a row's slug and save to remove it. Posts are never deleted when a type is removed.
 
 From code, add or change types with the `bcp/post_types` filter:
 
