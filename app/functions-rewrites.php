@@ -13,7 +13,7 @@
  * Flushes the rewrite rules after the plugin is activated, once the portfolio
  * post type and taxonomies have been registered.
  *
- * @since  1.0.4
+ * @since  1.1.0
  * @access public
  * @return void
  */
@@ -24,6 +24,18 @@ add_action( 'init', function() {
 		delete_option( 'bcp_flush_rewrite_rules' );
 	}
 }, 20 );
+
+/**
+ * Flags the rewrite rules for a flush when the settings change. The flush runs
+ * on the next request, after the post types have been registered with the new
+ * slugs.
+ *
+ * @since  1.1.0
+ * @access public
+ * @return void
+ */
+add_action( 'add_option_bcp_settings',    function() { update_option( 'bcp_flush_rewrite_rules', true ); } );
+add_action( 'update_option_bcp_settings', function() { update_option( 'bcp_flush_rewrite_rules', true ); } );
 
 /**
  * Returns the project rewrite slug used for single projects.

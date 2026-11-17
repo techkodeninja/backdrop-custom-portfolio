@@ -13,6 +13,8 @@ A complete portfolio solution for creative people.
 
 Backdrop Custom Portfolio is a portfolio management plugin for creative people such as artists, photographers, and Web designers to showcase their work.
 
+You can add more portfolio-style post types, such as Photography or Web Design, from Portfolio -> Settings. They share the portfolio categories and tags.
+
 == Installation ==
 
 1. In your admin panel, go to Plugins -> Add New and click the Upload Plugin button.
@@ -26,5 +28,8 @@ The stylesheet is compiled with Vite from `resources/scss/screen.scss`. Source a
 == Changelog ==
 
 = Unreleased =
+* Added extra post types, configured from Portfolio -> Settings or with the `bcp/post_types` filter.
+* Added excerpt and menu order support, and more admin notice labels.
+* Added uninstall cleanup and a clearer notice when dependencies are missing.
 * Replaced Laravel Mix with Vite for building assets.
 * Removed the backdrop-dev/mix dependency; the admin stylesheet is now enqueued directly.

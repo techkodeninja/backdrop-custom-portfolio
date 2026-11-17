@@ -11,15 +11,28 @@
 
 namespace BCP;
 
-add_action( 'admin_enqueue_scripts', function() {
+/**
+ * Loads the admin stylesheet, but only on the list screens of the portfolio post
+ * types so it doesn't touch the rest of the admin.
+ */
+add_action( 'admin_enqueue_scripts', function( $hook ) {
 
-    $file = plugin_dir_path( __DIR__ ) . 'public/assets/css/screen.css';
+	if ( 'edit.php' !== $hook ) {
+		return;
+	}
 
-    wp_enqueue_style(
-        'creativity-screen',
-        plugin_dir_url( __DIR__ ) . 'public/assets/css/screen.css',
-        [],
-        file_exists( $file ) ? filemtime( $file ) : null
-    );
+	$screen = get_current_screen();
+
+	if ( ! $screen || ! array_key_exists( $screen->post_type, bcp_get_post_types() ) ) {
+		return;
+	}
+
+	$file = plugin_dir_path( __DIR__ ) . 'public/assets/css/screen.css';
+
+	wp_enqueue_style(
+		'bcp-admin',
+		plugin_dir_url( __DIR__ ) . 'public/assets/css/screen.css',
+		[],
+		file_exists( $file ) ? filemtime( $file ) : null
+	);
 } );
-

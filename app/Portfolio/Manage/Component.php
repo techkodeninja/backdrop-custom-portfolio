@@ -17,40 +17,37 @@ class Component implements Bootable {
 
 	public function boot(): void {
 
-		// Custom columns on the edit portfolio items screen.
-		$type = bcp_get_setting( 'portfolio_type' );
-
-		add_filter( "manage_edit-{$type}_columns",        [ $this, 'columns' ]             );
-		add_action( "manage_{$type}_posts_custom_column", [ $this, 'custom_column' ], 10, 2 );
+		// Custom columns on the edit screen of every portfolio post type.
+		foreach ( array_keys( bcp_get_post_types() ) as $type ) {
+			add_filter( "manage_edit-{$type}_columns",        [ $this, 'columns' ]             );
+			add_action( "manage_{$type}_posts_custom_column", [ $this, 'custom_column' ], 10, 2 );
+		}
 	}
 
 	public function columns( $columns ) {
 
-		$new_columns = [
-			'cb'    => $columns['cb'],
-			'title' => esc_html__( 'Project', 'backdrop-custom-portfolio' )
-		];
-
-		if ( current_theme_supports( 'post-thumbnails' ) ) {
-
-			$new_columns['thumbnail'] = esc_html__( 'Thumbnail', 'backdrop-custom-portfolio' );
+		if ( ! current_theme_supports( 'post-thumbnails' ) ) {
+			return $columns;
 		}
 
-		$columns = array_merge( $new_columns, $columns );
+		// Put the thumbnail right after the title.
+		$new_columns = [];
 
-		$columns['title'] = $new_columns['title'];
+		foreach ( $columns as $key => $label ) {
+			$new_columns[ $key ] = $label;
 
-		return $columns;
+			if ( 'title' === $key ) {
+				$new_columns['thumbnail'] = esc_html__( 'Thumbnail', 'backdrop-custom-portfolio' );
+			}
+		}
+
+		return $new_columns;
 	}
 
 	public function custom_column( $column, $post_id ) {
+
 		if ( 'thumbnail' === $column ) {
-
-			if ( has_post_thumbnail() ) {
-
-				the_post_thumbnail();
-			}
+			echo get_the_post_thumbnail( $post_id, [ 60, 60 ] ); // phpcs:ignore WordPress.Security.EscapeOutput
 		}
 	}
-
 }

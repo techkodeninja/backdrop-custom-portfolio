@@ -14,6 +14,24 @@ A portfolio management plugin for WordPress, built for creative people such as a
 2. Choose the plugin's ZIP file and click **Install Now**.
 3. Click **Activate**.
 
+## Multiple post types
+
+Go to **Portfolio → Settings → Extra Post Types** and add a slug (used in the URL), a singular name and a plural name. Each extra type gets its own menu and archive at `/slug/`, and shares the portfolio categories and tags. Clear a row's slug and save to remove it. Posts are never deleted when a type is removed.
+
+From code, add or change types with the `bcp/post_types` filter:
+
+```php
+add_filter( 'bcp/post_types', function( $types ) {
+	$types['bcp-photography'] = [
+		'singular' => 'Photo Set',
+		'plural'   => 'Photography',
+		'rewrite'  => 'photography',
+	];
+
+	return $types;
+} );
+```
+
 ## Development
 
 ```bash
