@@ -51,7 +51,13 @@ Install Composer dependencies with `composer install --no-dev` before running `n
 
 ## Releasing
 
-Publishing a GitHub release runs `.github/workflows/release.yml`, which builds the plugin and attaches the ZIP to the release.
+1. Branch from `develop` as `release/x.y.z` (for example `release/1.1.0`).
+2. In that branch, set the version in `backdrop-custom-portfolio.php` (`Version:`), `readme.txt` (`Stable tag:`) and `package.json`, and turn the `[Unreleased]` section of `CHANGELOG.md` into `## [x.y.z] - date`.
+3. Open a pull request into `develop` and merge it.
+
+Merging runs `.github/workflows/release.yml`, which checks the three versions and the changelog section match the branch name, tags the merge commit `x.y.z` (no "v"), publishes the release with that changelog section as its notes, then builds the plugin and attaches `backdrop-custom-portfolio.x.y.z.zip`. Publishing a release by hand also works: the ZIP is built and attached.
+
+`composer.lock` is not committed; the framework is resolved from `composer.json` (`^1.0.1`).
 
 ## Changelog
 
