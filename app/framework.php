@@ -10,6 +10,22 @@
  */
 
 # ----------------------------------------------------------------------------------
+# Wait for the theme.
+# ----------------------------------------------------------------------------------
+#
+# This file is loaded while plugins are loading, which is before ClassicPress has set up
+# the theme (`TEMPLATEPATH` and friends). The framework needs those, and a Backdrop theme
+# may already have created the application, so boot on `after_setup_theme` instead. By
+# then `Backdrop\booted()` tells us whether to reuse the theme's application.
+if ( ! did_action( 'after_setup_theme' ) ) {
+	add_action( 'after_setup_theme', static function() {
+		require __FILE__;
+	} );
+
+	return;
+}
+
+# ----------------------------------------------------------------------------------
 # Create a new application.
 # ----------------------------------------------------------------------------------
 #
