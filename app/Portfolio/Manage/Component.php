@@ -17,11 +17,52 @@ class Component implements Bootable {
 
 	public function boot(): void {
 
+		add_filter( 'dashboard_glance_items', [ $this, 'glance_items' ] );
+
 		// Custom columns on the edit screen of every portfolio post type.
 		foreach ( array_keys( bcp_get_post_types() ) as $type ) {
 			add_filter( "manage_edit-{$type}_columns",        [ $this, 'columns' ]             );
 			add_action( "manage_{$type}_posts_custom_column", [ $this, 'custom_column' ], 10, 2 );
 		}
+	}
+
+	/**
+	 * Lists every portfolio post type in the "At a Glance" dashboard widget. WordPress
+	 * only lists a post type there once it has a published item, so this adds the empty
+	 * ones too, with a link to their list screen.
+	 *
+	 * @since  1.1.0
+	 * @access public
+	 * @param  array  $items
+	 * @return array
+	 */
+	public function glance_items( $items ) {
+
+		foreach ( array_keys( bcp_get_post_types() ) as $type ) {
+
+			$object = get_post_type_object( $type );
+
+			if ( ! $object || ! current_user_can( $object->cap->edit_posts ) ) {
+				continue;
+			}
+
+			$count = wp_count_posts( $type );
+
+			// Post types with published items are already listed by WordPress.
+			if ( ! empty( $count->publish ) ) {
+				continue;
+			}
+
+			$items[] = sprintf(
+				'<a class="%1$s-count" href="%2$s">%3$s %4$s</a>',
+				esc_attr( $type ),
+				esc_url( admin_url( 'edit.php?post_type=' . $type ) ),
+				number_format_i18n( 0 ),
+				esc_html( $object->labels->name )
+			);
+		}
+
+		return $items;
 	}
 
 	public function columns( $columns ) {
