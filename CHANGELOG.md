@@ -7,6 +7,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 ## [Unreleased]
 
 ### Added
+- Every portfolio post type is now listed in the "At a Glance" dashboard widget, including ones with no published items yet.
 - Extra post types. Add more portfolio-style post types (for example Photography) from **Portfolio → Settings**, or in code with the `bcp/post_types` filter. They share the portfolio categories and tags.
 - Excerpt and page attributes (menu order) support on portfolio post types.
 - Labels for the "published", "updated", "scheduled" and "reverted to draft" notices, plus archives and attributes.
