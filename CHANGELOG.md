@@ -16,7 +16,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 ### Changed
 - A missing `vendor/` folder now shows an admin notice instead of a fatal error.
 - Translations load from `public/lang` (`Domain Path` corrected).
-- The rewrite base is sanitized as a slug and can't use slugs WordPress already uses.
+- The rewrite base is sanitized as a slug and can't use reserved slugs (such as `page` and `category`).
 - Rewrite rules are flushed once on the next request after the settings change, instead of while rendering the settings page.
 - The admin stylesheet handle is now `bcp-admin` and only loads on portfolio list screens.
 - The thumbnail column now shows the right image for each row and sits after the title.

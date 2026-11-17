@@ -110,7 +110,7 @@ class Component implements Bootable {
 		if ( in_array( strtok( $base, '/' ), $reserved, true ) ) {
 			add_settings_error( 'bcp_settings', 'bcp_reserved_base', sprintf(
 				/* translators: %s: the slug that was rejected. */
-				esc_html__( '"%s" is used by WordPress, so the portfolio base was not changed.', 'backdrop-custom-portfolio' ),
+				esc_html__( '"%s" is a reserved slug, so the portfolio base was not changed.', 'backdrop-custom-portfolio' ),
 				esc_html( $base )
 			) );
 			$base = $current['portfolio_rewrite_base'];

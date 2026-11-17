@@ -95,7 +95,7 @@ function bcp_get_default_settings(): array {
 }
 
 /**
- * Slugs that an extra post type can't use because WordPress already does.
+ * Slugs that an extra post type can't use because ClassicPress already uses them.
  *
  * @since  1.1.0
  * @access public

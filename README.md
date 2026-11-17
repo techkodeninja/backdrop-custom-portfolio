@@ -1,11 +1,11 @@
 # Backdrop Custom Portfolio
 
-A portfolio management plugin for WordPress, built for creative people such as artists, photographers, and web designers to showcase their work. It is built on the [Backdrop](https://github.com/backdrop-dev) framework.
+A portfolio management plugin for ClassicPress, built for creative people such as artists, photographers, and web designers to showcase their work. It is built on the [Backdrop](https://github.com/backdrop-dev) framework.
 
 ## Requirements
 
 - PHP 7.4 or later
-- WordPress
+- ClassicPress 1.0 or later
 - [Composer](https://getcomposer.org/) and [Node.js](https://nodejs.org/) for development
 
 ## Installation
