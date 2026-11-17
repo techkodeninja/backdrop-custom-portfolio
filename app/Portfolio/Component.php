@@ -125,6 +125,11 @@ class Component implements Bootable {
 				'rewrite'      => [ 'with_front' => false, 'slug' => $config['rewrite'] ]
 			];
 
+			// Extra post types go under the main Portfolio menu instead of getting their own.
+			if ( empty( $config['main'] ) ) {
+				$args['show_in_menu'] = 'edit.php?post_type=' . bcp_get_setting( 'portfolio_type' );
+			}
+
 			register_post_type( $type, apply_filters( 'bcp/portfolio/args', $args, $type ) );
 		}
 	}
