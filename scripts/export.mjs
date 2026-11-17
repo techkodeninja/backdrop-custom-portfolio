@@ -8,7 +8,7 @@
 import { cpSync, existsSync, rmSync } from 'node:fs';
 
 const exportPath = 'backdrop-custom-portfolio';
-const files      = [ 'backdrop-custom-portfolio.php', 'readme.txt' ];
+const files      = [ 'backdrop-custom-portfolio.php', 'uninstall.php', 'readme.txt', 'LICENSE' ];
 const folders    = [ 'app', 'public', 'vendor' ];
 
 // Start clean.

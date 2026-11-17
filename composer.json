@@ -1,7 +1,7 @@
 {
     "name": "luthemes/backdrop-custom-portfolio",
     "description": "A simple way to create a portfolio.",
-    "keywords": [ "wordpress", "plugin" ],
+    "keywords": [ "classicpress", "wordpress", "plugin" ],
     "homepage": "https://luthemes.com/portfolio/backdrop-custom-portfolio",
     "license": "GPL-2.0-or-later",
     "authors": [

@@ -4,42 +4,35 @@ on:
     release:
         types: [published]
 
+permissions:
+    contents: write
+
 jobs:
-    test:
+    build:
         runs-on: ubuntu-latest
 
         steps:
-            - name: step one
-              uses: webfactory/ssh-agent@v0.5.4
+            - name: Check out the code
+              uses: actions/checkout@v4
+
+            - name: Set up Node
+              uses: actions/setup-node@v4
               with:
-                  ssh-private-key: ${{ secrets.PRIVATE_KEY }}
+                  node-version: 22
 
-            - name: step two
-              uses: actions/checkout@v2
-              with:
-                  ssh-key: ${{ secrets.PRIVATE_KEY }}
+            - name: Install PHP dependencies
+              run: composer install --no-dev --optimize-autoloader --no-interaction
 
-            - name: step three
-              run: composer install --no-dev
-
-            - name: step four
+            - name: Install Node dependencies
               run: npm install
 
-            - name: step five
+            - name: Build the plugin
               run: npm run build
 
-            - name: step six
+            - name: Create the ZIP
               run: zip -r ${{ github.event.repository.name }}.${{ github.ref_name }}.zip ${{ github.event.repository.name }}
 
-            - name: step seven
-              uses: actions/upload-artifact@v4
-              with:
-                  name: ${{ github.event.repository.name }}.${{ github.ref_name }}
-                  path: ${{ github.event.repository.name }}.${{ github.ref_name }}.zip
-
-            - name: step eight
-              uses: JasonEtco/upload-to-release@master
-              with:
-                  args: ${{ github.event.repository.name }}.${{ github.ref_name }}.zip application/zip
+            - name: Attach the ZIP to the release
               env:
-                  GITHUB_TOKEN: ${{ secrets.TOKEN }}
+                  GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+              run: gh release upload "${{ github.ref_name }}" "${{ github.event.repository.name }}.${{ github.ref_name }}.zip" --clobber

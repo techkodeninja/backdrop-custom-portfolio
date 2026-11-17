@@ -123,8 +123,10 @@ class Component implements Bootable {
 			'show_in_rest'      => true,
 		];
 
-        // Register the post types.
-        register_taxonomy( bcp_get_setting( 'portfolio_category' ),	bcp_get_setting( 'portfolio_type' ), $cat_args );
-        register_taxonomy( bcp_get_setting( 'portfolio_tag' ), 		bcp_get_setting( 'portfolio_type' ), $tag_args );
+        // Categories and tags are shared by every portfolio post type.
+        $types = array_keys( bcp_get_post_types() );
+
+        register_taxonomy( bcp_get_setting( 'portfolio_category' ), $types, $cat_args );
+        register_taxonomy( bcp_get_setting( 'portfolio_tag' ),      $types, $tag_args );
     }
 }

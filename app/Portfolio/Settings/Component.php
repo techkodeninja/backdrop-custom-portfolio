@@ -16,13 +16,13 @@ use Backdrop\Contracts\Bootable;
 class Component implements Bootable {
 
 	/**
-	 * Settings page name.
+	 * Settings page hook suffix.
 	 *
 	 * @since  1.0.0
 	 * @access public
-	 * @return string
+	 * @var    string
 	 */
-	public $settings_page = '';
+	public $page_hook = '';
 
 	/**
 	 * Sets up custom admin menus.
@@ -34,7 +34,7 @@ class Component implements Bootable {
 	public function admin_menu() {
 
 		// Create the settings page.
-		$this->settings_page = add_submenu_page(
+		$this->page_hook = add_submenu_page(
 			'edit.php?post_type=' . bcp_get_setting( 'portfolio_type' ),
 			esc_html__( 'Portfolio Settings', 'backdrop-custom-portfolio' ),
 			esc_html__( 'Settings',           'backdrop-custom-portfolio' ),
@@ -43,7 +43,7 @@ class Component implements Bootable {
 			array( $this, 'settings_page' )
 		);
 
-		if ( $this->settings_page ) {
+		if ( $this->page_hook ) {
 
 			// Register settings.
 			add_action( 'admin_init', array( $this, 'register_settings' ) );
@@ -64,17 +64,21 @@ class Component implements Bootable {
 
 		/* === Settings Sections === */
 
-		add_settings_section( 'general',    esc_html__( 'General Settings', 'backdrop-custom-portfolio' ), array( $this, 'section_general'    ), $this->settings_page );
-		add_settings_section( 'permalinks', esc_html__( 'Permalinks',       'backdrop-custom-portfolio' ), array( $this, 'section_permalinks' ), $this->settings_page );
+		add_settings_section( 'general',    esc_html__( 'General Settings', 'backdrop-custom-portfolio' ), array( $this, 'section_general'    ), $this->page_hook );
+		add_settings_section( 'permalinks', esc_html__( 'Permalinks',       'backdrop-custom-portfolio' ), array( $this, 'section_permalinks' ), $this->page_hook );
 
 		/* === Settings Fields === */
 
 		// General section fields
-		add_settings_field( 'portfolio_title',       esc_html__( 'Title',       'backdrop-custom-portfolio' ), array( $this, 'field_portfolio_title'       ), $this->settings_page, 'general' );
-		add_settings_field( 'portfolio_description', esc_html__( 'Description', 'backdrop-custom-portfolio' ), array( $this, 'field_portfolio_description' ), $this->settings_page, 'general' );
+		add_settings_field( 'portfolio_title',       esc_html__( 'Title',       'backdrop-custom-portfolio' ), array( $this, 'field_portfolio_title'       ), $this->page_hook, 'general' );
+		add_settings_field( 'portfolio_description', esc_html__( 'Description', 'backdrop-custom-portfolio' ), array( $this, 'field_portfolio_description' ), $this->page_hook, 'general' );
 
 		// Permalinks section fields.
-		add_settings_field( 'portfolio_rewrite_base', esc_html__( 'Portfolio Base', 'backdrop-custom-portfolio' ), array( $this, 'field_portfolio_rewrite_base' ), $this->settings_page, 'permalinks' );
+		add_settings_field( 'portfolio_rewrite_base', esc_html__( 'Portfolio Base', 'backdrop-custom-portfolio' ), array( $this, 'field_portfolio_rewrite_base' ), $this->page_hook, 'permalinks' );
+
+		// Extra post types section.
+		add_settings_section( 'extra_types', esc_html__( 'Extra Post Types', 'backdrop-custom-portfolio' ), array( $this, 'section_extra_types' ), $this->page_hook );
+		add_settings_field( 'extra_types', esc_html__( 'Post Types', 'backdrop-custom-portfolio' ), array( $this, 'field_extra_types' ), $this->page_hook, 'extra_types' );
 	}
 
 	/**
@@ -82,20 +86,76 @@ class Component implements Bootable {
 	 *
 	 * @since  1.0.0
 	 * @access public
-	 * @param  array  $settings
+	 * @param  mixed  $settings
 	 * @return array
 	 */
-	function validate_settings( array $settings ): array {
+	function validate_settings( $settings ): array {
 
-		// Text boxes.
-		$settings['portfolio_title']        = $settings['portfolio_title']        ? strip_tags( $settings['portfolio_title'] ) : esc_html__( 'Portfolio', 'backdrop-custom-portfolio' );
-		$settings['portfolio_rewrite_base'] = $settings['portfolio_rewrite_base'] ? trim( strip_tags( $settings['portfolio_rewrite_base'] ), '/' ) : 'portfolio';
+		$settings = is_array( $settings ) ? $settings : [];
+		$current  = bcp_get_settings();
+		$reserved = bcp_get_reserved_slugs();
+
+		// Anything not on the form (post type and taxonomy names) is kept as is.
+		$clean = $current;
+
+		// Title.
+		$title                    = isset( $settings['portfolio_title'] ) ? sanitize_text_field( $settings['portfolio_title'] ) : '';
+		$clean['portfolio_title'] = '' !== $title ? $title : esc_html__( 'Portfolio', 'backdrop-custom-portfolio' );
+
+		// Rewrite base: lowercase slug segments, no leading or trailing slashes.
+		$base = isset( $settings['portfolio_rewrite_base'] ) ? sanitize_text_field( $settings['portfolio_rewrite_base'] ) : '';
+		$base = implode( '/', array_filter( array_map( 'sanitize_title', explode( '/', trim( $base, '/' ) ) ) ) );
+		$base = '' !== $base ? $base : 'portfolio';
+
+		if ( in_array( strtok( $base, '/' ), $reserved, true ) ) {
+			add_settings_error( 'bcp_settings', 'bcp_reserved_base', sprintf(
+				/* translators: %s: the slug that was rejected. */
+				esc_html__( '"%s" is a reserved slug, so the portfolio base was not changed.', 'backdrop-custom-portfolio' ),
+				esc_html( $base )
+			) );
+			$base = $current['portfolio_rewrite_base'];
+		}
+
+		$clean['portfolio_rewrite_base'] = $base;
 
 		// Kill evil scripts.
-		$settings['portfolio_description'] = stripslashes( wp_filter_post_kses( addslashes( $settings['portfolio_description'] ) ) );
+		$description                    = isset( $settings['portfolio_description'] ) ? $settings['portfolio_description'] : '';
+		$clean['portfolio_description'] = stripslashes( wp_filter_post_kses( addslashes( $description ) ) );
 
-		// Return the validated/sanitized settings.
-		return $settings;
+		// Extra post types. Rows without a slug are dropped, which is how one is removed.
+		$extra = [];
+		$rows  = isset( $settings['extra_types'] ) && is_array( $settings['extra_types'] ) ? $settings['extra_types'] : [];
+
+		foreach ( $rows as $row ) {
+
+			$slug = sanitize_title( $row['slug'] ?? '' );
+
+			if ( '' === $slug ) {
+				continue;
+			}
+
+			if ( $slug === $base || in_array( $slug, $reserved, true ) || isset( $extra[ $slug ] ) ) {
+				add_settings_error( 'bcp_settings', 'bcp_bad_type_' . $slug, sprintf(
+					/* translators: %s: the slug that was rejected. */
+					esc_html__( 'The post type "%s" was skipped because that slug is already in use.', 'backdrop-custom-portfolio' ),
+					esc_html( $slug )
+				) );
+				continue;
+			}
+
+			$singular = sanitize_text_field( $row['singular'] ?? '' );
+			$plural   = sanitize_text_field( $row['plural'] ?? '' );
+
+			$extra[ $slug ] = [
+				'slug'     => $slug,
+				'singular' => '' !== $singular ? $singular : ucfirst( $slug ),
+				'plural'   => '' !== $plural ? $plural : ( '' !== $singular ? $singular : ucfirst( $slug ) ),
+			];
+		}
+
+		$clean['extra_types'] = array_values( array_slice( $extra, 0, 10 ) );
+
+		return $clean;
 	}
 
 	/**
@@ -182,6 +242,57 @@ class Component implements Bootable {
 	<?php }
 
 	/**
+	 * Extra post types section callback.
+	 *
+	 * @since  1.1.0
+	 * @access public
+	 * @return void
+	 */
+	public function section_extra_types() { ?>
+
+		<p class="description">
+			<?php esc_html_e( 'Add more portfolio-style post types, such as Photography or Web Design. They share the portfolio categories and tags. Clear the slug to remove one.', 'backdrop-custom-portfolio' ); ?>
+		</p>
+	<?php }
+
+	/**
+	 * Extra post types field callback.
+	 *
+	 * @since  1.1.0
+	 * @access public
+	 * @return void
+	 */
+	public function field_extra_types() {
+
+		$rows   = array_values( bcp_get_settings()['extra_types'] );
+		$rows[] = [];
+		$rows[] = []; ?>
+
+		<table class="widefat striped" style="max-width: 640px;">
+			<thead>
+				<tr>
+					<th><?php esc_html_e( 'Slug', 'backdrop-custom-portfolio' ); ?></th>
+					<th><?php esc_html_e( 'Singular', 'backdrop-custom-portfolio' ); ?></th>
+					<th><?php esc_html_e( 'Plural', 'backdrop-custom-portfolio' ); ?></th>
+				</tr>
+			</thead>
+			<tbody>
+				<?php foreach ( $rows as $i => $row ) : ?>
+					<tr>
+						<td><input type="text" class="regular-text code" name="bcp_settings[extra_types][<?php echo (int) $i; ?>][slug]" value="<?php echo esc_attr( $row['slug'] ?? '' ); ?>" /></td>
+						<td><input type="text" class="regular-text" name="bcp_settings[extra_types][<?php echo (int) $i; ?>][singular]" value="<?php echo esc_attr( $row['singular'] ?? '' ); ?>" /></td>
+						<td><input type="text" class="regular-text" name="bcp_settings[extra_types][<?php echo (int) $i; ?>][plural]" value="<?php echo esc_attr( $row['plural'] ?? '' ); ?>" /></td>
+					</tr>
+				<?php endforeach; ?>
+			</tbody>
+		</table>
+
+		<p class="description">
+			<?php esc_html_e( 'The slug is used in the URL (for example, photography). Save again to get two more empty rows.', 'backdrop-custom-portfolio' ); ?>
+		</p>
+	<?php }
+
+	/**
 	 * Renders the settings page.
 	 *
 	 * @since  1.0.0
@@ -190,10 +301,7 @@ class Component implements Bootable {
 	 */
 	public function settings_page() {
 
-		// Flush the rewrite rules if the settings were updated.
-		if ( isset( $_GET['settings-updated'] ) )
-			flush_rewrite_rules(); ?>
-
+		?>
 			<div class="wrap">
 				<h1><?php esc_html_e( 'Portfolio Settings', 'backdrop-custom-portfolio' ); ?></h1>
 
@@ -201,7 +309,7 @@ class Component implements Bootable {
 
 				<form method="post" action="options.php">
 					<?php settings_fields( 'bcp_settings' ); ?>
-					<?php do_settings_sections( $this->settings_page ); ?>
+					<?php do_settings_sections( $this->page_hook ); ?>
 					<?php submit_button( esc_attr__( 'Update Settings', 'backdrop-custom-portfolio' ), 'primary' ); ?>
 				</form>
 
@@ -210,7 +318,6 @@ class Component implements Bootable {
 
 	public function boot(): void {
 
-		// Custom columns on the edit portfolio items screen.
 		add_action( 'admin_menu', array( $this, 'admin_menu' ) );
 	}
 }

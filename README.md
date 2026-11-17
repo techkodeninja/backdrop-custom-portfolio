@@ -1,11 +1,11 @@
 # Backdrop Custom Portfolio
 
-A portfolio management plugin for WordPress, built for creative people such as artists, photographers, and web designers to showcase their work. It is built on the [Backdrop](https://github.com/backdrop-dev) framework.
+A portfolio management plugin for ClassicPress, built for creative people such as artists, photographers, and web designers to showcase their work. It is built on the [Backdrop](https://github.com/backdrop-dev) framework.
 
 ## Requirements
 
 - PHP 7.4 or later
-- WordPress
+- ClassicPress 1.0 or later
 - [Composer](https://getcomposer.org/) and [Node.js](https://nodejs.org/) for development
 
 ## Installation
@@ -13,6 +13,24 @@ A portfolio management plugin for WordPress, built for creative people such as a
 1. In your admin panel, go to **Plugins → Add New** and click **Upload Plugin**.
 2. Choose the plugin's ZIP file and click **Install Now**.
 3. Click **Activate**.
+
+## Multiple post types
+
+Go to **Portfolio → Settings → Extra Post Types** and add a slug (used in the URL), a singular name and a plural name. Each extra type gets its own menu and archive at `/slug/`, and shares the portfolio categories and tags. Clear a row's slug and save to remove it. Posts are never deleted when a type is removed.
+
+From code, add or change types with the `bcp/post_types` filter:
+
+```php
+add_filter( 'bcp/post_types', function( $types ) {
+	$types['bcp-photography'] = [
+		'singular' => 'Photo Set',
+		'plural'   => 'Photography',
+		'rewrite'  => 'photography',
+	];
+
+	return $types;
+} );
+```
 
 ## Development
 
