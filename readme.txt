@@ -2,6 +2,7 @@
 
 Contributors: benlumia007
 Tags: portfolio
+Requires CP: 1.0
 Requires PHP: 7.4
 Stable tag: 1.0.3
 License: GPL-2.0-or-later
@@ -14,6 +15,24 @@ A complete portfolio solution for creative people.
 Backdrop Custom Portfolio is a portfolio management plugin for creative people such as artists, photographers, and Web designers to showcase their work.
 
 You can add more portfolio-style post types, such as Photography or Web Design, from Portfolio -> Settings. They share the portfolio categories and tags.
+
+== Frequently Asked Questions ==
+
+= How do I add another post type, such as Photography? =
+
+Go to Portfolio -> Settings -> Extra Post Types. Enter a slug (used in the URL), a singular name and a plural name, choose where it appears in the admin menu, and save. The extra types share the portfolio categories and tags.
+
+= What happens to my content if I remove a post type? =
+
+Clear its slug and save. The posts are not deleted, but they are not shown anywhere until the post type is added again with the same slug.
+
+= Can I add post types from code? =
+
+Yes. Use the `bcp/post_types` filter. Each entry has `singular`, `plural` and `rewrite` keys, and an optional `menu` key of `portfolio`, `own` or `hidden`. The `bcp/portfolio/args` and `bcp/portfolio/labels` filters receive the post type name as a second argument.
+
+= Does this work with other themes? =
+
+It is built on the Backdrop framework, so it shares the framework with Backdrop themes such as Prismatic. It does not need a Backdrop theme.
 
 == Installation ==
 

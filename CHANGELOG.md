@@ -7,6 +7,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 ## [Unreleased]
 
 ### Added
+- Merging a `release/x.y.z` pull request into `develop` now tags and publishes the release and attaches the plugin ZIP. The workflow checks that the plugin header, `readme.txt` and `package.json` versions match the branch, that the changelog has a section for it, and that the bundled framework guards its helper functions.
+- FAQ in `readme.txt`, and `Requires CP`.
 - A Menu setting for each extra post type: under the Portfolio menu (the default), its own top-level menu, or hidden from the menu.
 - Every portfolio post type is now listed in the "At a Glance" dashboard widget, including ones with no published items yet.
 - Extra post types. Add more portfolio-style post types (for example Photography) from **Portfolio → Settings**, or in code with the `bcp/post_types` filter. They share the portfolio categories and tags.
@@ -20,6 +22,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - Fatal error "Undefined constant TEMPLATEPATH" on activation: the framework now boots on `after_setup_theme`, after the theme is set up, and reuses a Backdrop theme's application when there is one.
 
 ### Changed
+- `composer.lock` is no longer committed (the framework is resolved from `composer.json`), as in Prismatic.
 - Extra post types now appear as submenu items under the main Portfolio menu instead of as their own top-level menus.
 - Requires `backdrop-dev/framework` `^1.0.1` (the 1.x line that Backdrop themes such as Prismatic use) instead of `^2.0`. Two copies of the framework from different lines can't share one request: the 2.x copy loaded first and broke the theme. The separate `backdrop-dev/contracts` package is no longer needed because 1.x ships its contracts.
 - A missing `vendor/` folder now shows an admin notice instead of a fatal error.

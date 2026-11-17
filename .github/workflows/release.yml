@@ -1,6 +1,17 @@
 name: release
 
+# Publishes a release and attaches the plugin ZIP (backdrop-custom-portfolio.x.y.z.zip).
+#
+# - Merging a pull request from a `release/x.y.z` branch into develop does
+#   it all: it tags the merge commit `x.y.z` (no "v"), publishes the release
+#   with the notes from that version's section of CHANGELOG.md, then builds
+#   and attaches the ZIP. The tag is always on the merged code.
+# - Publishing a release by hand still works: the ZIP is built and attached.
+
 on:
+    pull_request:
+        types: [closed]
+        branches: [develop]
     release:
         types: [published]
 
@@ -8,31 +19,116 @@ permissions:
     contents: write
 
 jobs:
-    build:
+    release:
+        if: github.event_name == 'release' || (github.event.pull_request.merged == true && startsWith(github.event.pull_request.head.ref, 'release/'))
         runs-on: ubuntu-latest
 
         steps:
-            - name: Check out the code
+            - name: Checkout
               uses: actions/checkout@v4
+              with:
+                  ref: ${{ github.event_name == 'pull_request' && github.event.pull_request.merge_commit_sha || github.ref }}
+
+            # Fail early if the tag, the plugin header, readme.txt and package.json disagree.
+            - name: Resolve version
+              id: version
+              env:
+                  EVENT: ${{ github.event_name }}
+                  RELEASE_TAG: ${{ github.event.release.tag_name }}
+                  BRANCH: ${{ github.event.pull_request.head.ref }}
+                  SLUG: ${{ github.event.repository.name }}
+              run: |
+                  if [ "$EVENT" = "pull_request" ]; then
+                      TAG="${BRANCH#release/}"
+                  else
+                      TAG="$RELEASE_TAG"
+                  fi
+
+                  VERSION="${TAG#v}"
+                  PLUGIN_VERSION=$(grep -m1 -E '^[[:space:]*]*Version:' "$SLUG.php" | sed -E 's/^[[:space:]*]*Version:[[:space:]]*//' | tr -d '\r')
+                  STABLE_TAG=$(grep -m1 '^Stable tag:' readme.txt | sed 's/^Stable tag:[[:space:]]*//' | tr -d '\r')
+                  PACKAGE_VERSION=$(node -p "require('./package.json').version")
+
+                  if [ "$VERSION" != "$PLUGIN_VERSION" ] || [ "$VERSION" != "$STABLE_TAG" ] || [ "$VERSION" != "$PACKAGE_VERSION" ]; then
+                      echo "::error::Release $TAG must match Version in $SLUG.php ($PLUGIN_VERSION), Stable tag in readme.txt ($STABLE_TAG) and version in package.json ($PACKAGE_VERSION)."
+                      exit 1
+                  fi
+
+                  echo "tag=$TAG" >> "$GITHUB_OUTPUT"
+                  echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+                  echo "zip=$SLUG.$VERSION.zip" >> "$GITHUB_OUTPUT"
+
+            # Before anything is published, make sure the release notes exist.
+            - name: Extract release notes
+              env:
+                  VERSION: ${{ steps.version.outputs.version }}
+              run: |
+                  python3 - "$VERSION" > release-notes.md <<'PY'
+                  import re, sys
+                  version = sys.argv[1]
+                  text = open('CHANGELOG.md', encoding='utf-8').read()
+                  match = re.search(r'^## \[?' + re.escape(version) + r'\]?[^\n]*\n(.*?)(?=^## |^\[[^\]]+\]: |\Z)', text, re.S | re.M)
+                  if not match or not match.group(1).strip():
+                      sys.exit(f'::error::CHANGELOG.md has no "## [{version}]" section.')
+                  print(match.group(1).strip())
+                  PY
 
             - name: Set up Node
               uses: actions/setup-node@v4
               with:
                   node-version: 22
 
+            # Resolves the framework from composer.json (composer.lock is not committed).
             - name: Install PHP dependencies
               run: composer install --no-dev --optimize-autoloader --no-interaction
 
-            - name: Install Node dependencies
-              run: npm install
+            # Two copies of the Backdrop framework (the plugin's and a theme's) share one request.
+            # Releases before the helper functions were guarded crashed with "Cannot redeclare
+            # Backdrop\booted()", so don't ship a framework copy that can do that.
+            - name: Check the framework guards its helpers
+              run: grep -q "function_exists" vendor/backdrop-dev/framework/src/functions-helpers.php
 
-            - name: Build the plugin
+            - name: Install Node dependencies
+              run: |
+                  if [ -f package-lock.json ]; then
+                      npm ci --no-fund
+                  else
+                      npm install --no-fund
+                  fi
+
+            # Builds the stylesheet with Vite, regenerates the translation template, and
+            # exports the plugin into the `backdrop-custom-portfolio` folder.
+            - name: Build
               run: npm run build
 
-            - name: Create the ZIP
-              run: zip -r ${{ github.event.repository.name }}.${{ github.ref_name }}.zip ${{ github.event.repository.name }}
+            - name: Create ZIP
+              run: |
+                  zip -rq "${{ steps.version.outputs.zip }}" "${{ github.event.repository.name }}"
+                  unzip -l "${{ steps.version.outputs.zip }}"
 
-            - name: Attach the ZIP to the release
+            # Only for a merged release pull request: tag the merge commit and
+            # publish the release, with notes from CHANGELOG.md.
+            - name: Tag and publish the release
+              if: github.event_name == 'pull_request'
               env:
-                  GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-              run: gh release upload "${{ github.ref_name }}" "${{ github.event.repository.name }}.${{ github.ref_name }}.zip" --clobber
+                  GH_TOKEN: ${{ github.token }}
+                  TAG: ${{ steps.version.outputs.tag }}
+                  SHA: ${{ github.event.pull_request.merge_commit_sha }}
+              run: |
+                  if gh release view "$TAG" > /dev/null 2>&1; then
+                      echo "::error::A $TAG release already exists."
+                      exit 1
+                  fi
+
+                  gh release create "$TAG" \
+                    --target "$SHA" \
+                    --title "$TAG" \
+                    --notes-file release-notes.md
+
+            - name: Upload ZIP to GitHub Release
+              env:
+                  GH_TOKEN: ${{ github.token }}
+              run: |
+                  gh release upload "${{ steps.version.outputs.tag }}" \
+                    "${{ steps.version.outputs.zip }}" \
+                    --clobber
