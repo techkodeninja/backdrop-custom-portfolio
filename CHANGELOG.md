@@ -18,6 +18,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - Fatal error "Undefined constant TEMPLATEPATH" on activation: the framework now boots on `after_setup_theme`, after the theme is set up, and reuses a Backdrop theme's application when there is one.
 
 ### Changed
+- Extra post types now appear as submenu items under the main Portfolio menu instead of as their own top-level menus.
 - Requires `backdrop-dev/framework` `^1.0.1` (the 1.x line that Backdrop themes such as Prismatic use) instead of `^2.0`. Two copies of the framework from different lines can't share one request: the 2.x copy loaded first and broke the theme. The separate `backdrop-dev/contracts` package is no longer needed because 1.x ships its contracts.
 - A missing `vendor/` folder now shows an admin notice instead of a fatal error.
 - Translations load from `public/lang` (`Domain Path` corrected).
