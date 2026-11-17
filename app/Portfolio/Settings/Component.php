@@ -146,8 +146,11 @@ class Component implements Bootable {
 			$singular = sanitize_text_field( $row['singular'] ?? '' );
 			$plural   = sanitize_text_field( $row['plural'] ?? '' );
 
+			$menu = $row['menu'] ?? 'portfolio';
+
 			$extra[ $slug ] = [
 				'slug'     => $slug,
+				'menu'     => in_array( $menu, bcp_get_menu_choices(), true ) ? $menu : 'portfolio',
 				'singular' => '' !== $singular ? $singular : ucfirst( $slug ),
 				'plural'   => '' !== $plural ? $plural : ( '' !== $singular ? $singular : ucfirst( $slug ) ),
 			];
@@ -266,13 +269,19 @@ class Component implements Bootable {
 
 		$rows   = array_values( bcp_get_settings()['extra_types'] );
 		$rows[] = [];
-		$rows[] = []; ?>
+		$rows[] = [];
+
+		$menus = [
+			'portfolio' => esc_html__( 'Under Portfolio', 'backdrop-custom-portfolio' ),
+			'own'       => esc_html__( 'Own menu', 'backdrop-custom-portfolio' ),
+			'hidden'    => esc_html__( 'Hidden', 'backdrop-custom-portfolio' ),
+		]; ?>
 
 		<style>
 			.bcp-types { width: 100%; max-width: 760px; table-layout: fixed; border-collapse: collapse; }
 			.bcp-types th, .bcp-types td { width: auto; padding: 10px 12px; text-align: left; vertical-align: middle; }
 			.bcp-types thead th { padding-bottom: 8px; font-weight: 600; }
-			.bcp-types input { width: 100%; max-width: none; margin: 0; box-sizing: border-box; }
+			.bcp-types input, .bcp-types select { width: 100%; max-width: none; margin: 0; box-sizing: border-box; }
 		</style>
 
 		<table class="widefat striped bcp-types">
@@ -281,6 +290,7 @@ class Component implements Bootable {
 					<th><?php esc_html_e( 'Slug', 'backdrop-custom-portfolio' ); ?></th>
 					<th><?php esc_html_e( 'Singular', 'backdrop-custom-portfolio' ); ?></th>
 					<th><?php esc_html_e( 'Plural', 'backdrop-custom-portfolio' ); ?></th>
+					<th><?php esc_html_e( 'Menu', 'backdrop-custom-portfolio' ); ?></th>
 				</tr>
 			</thead>
 			<tbody>
@@ -289,13 +299,20 @@ class Component implements Bootable {
 						<td><input type="text" class="regular-text code" name="bcp_settings[extra_types][<?php echo (int) $i; ?>][slug]" value="<?php echo esc_attr( $row['slug'] ?? '' ); ?>" /></td>
 						<td><input type="text" class="regular-text" name="bcp_settings[extra_types][<?php echo (int) $i; ?>][singular]" value="<?php echo esc_attr( $row['singular'] ?? '' ); ?>" /></td>
 						<td><input type="text" class="regular-text" name="bcp_settings[extra_types][<?php echo (int) $i; ?>][plural]" value="<?php echo esc_attr( $row['plural'] ?? '' ); ?>" /></td>
+						<td>
+							<select name="bcp_settings[extra_types][<?php echo (int) $i; ?>][menu]">
+								<?php foreach ( $menus as $value => $label ) : ?>
+									<option value="<?php echo esc_attr( $value ); ?>" <?php selected( $row['menu'] ?? 'portfolio', $value ); ?>><?php echo esc_html( $label ); ?></option>
+								<?php endforeach; ?>
+							</select>
+						</td>
 					</tr>
 				<?php endforeach; ?>
 			</tbody>
 		</table>
 
 		<p class="description">
-			<?php esc_html_e( 'The slug is used in the URL (for example, photography). Save again to get two more empty rows.', 'backdrop-custom-portfolio' ); ?>
+			<?php esc_html_e( 'The slug is used in the URL (for example, photography). Menu sets where the type appears in the admin menu. Save again to get two more empty rows.', 'backdrop-custom-portfolio' ); ?>
 		</p>
 	<?php }
 

@@ -124,11 +124,25 @@ function bcp_get_extra_type_name( string $slug ): string {
 }
 
 /**
+ * Where an extra post type shows up in the admin menu: `portfolio` (under the main
+ * Portfolio menu), `own` (its own top-level menu) or `hidden` (no menu entry).
+ *
+ * @since  1.1.0
+ * @access public
+ * @return array
+ */
+function bcp_get_menu_choices(): array {
+
+	return [ 'portfolio', 'own', 'hidden' ];
+}
+
+/**
  * Returns every portfolio post type, keyed by post type name. The first one is
  * always the main portfolio; the rest are the extra types from the settings.
  * Use the `bcp/post_types` filter to add more from code.
  *
- * Each entry has `singular`, `plural` and `rewrite` keys.
+ * Each entry has `singular`, `plural` and `rewrite` keys, and extra types also have a
+ * `menu` key (see `bcp_get_menu_choices()`).
  *
  * @since  1.1.0
  * @access public
@@ -166,10 +180,13 @@ function bcp_get_post_types(): array {
 		$singular = ! empty( $row['singular'] ) ? $row['singular'] : ucfirst( $slug );
 		$plural   = ! empty( $row['plural'] )   ? $row['plural']   : $singular;
 
+		$menu = $row['menu'] ?? 'portfolio';
+
 		$types[ $name ] = [
 			'singular' => $singular,
 			'plural'   => $plural,
 			'rewrite'  => $slug,
+			'menu'     => in_array( $menu, bcp_get_menu_choices(), true ) ? $menu : 'portfolio',
 		];
 	}
 
