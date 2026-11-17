@@ -268,7 +268,14 @@ class Component implements Bootable {
 		$rows[] = [];
 		$rows[] = []; ?>
 
-		<table class="widefat striped" style="max-width: 640px;">
+		<style>
+			.bcp-types { width: 100%; max-width: 760px; table-layout: fixed; border-collapse: collapse; }
+			.bcp-types th, .bcp-types td { width: auto; padding: 10px 12px; text-align: left; vertical-align: middle; }
+			.bcp-types thead th { padding-bottom: 8px; font-weight: 600; }
+			.bcp-types input { width: 100%; max-width: none; margin: 0; box-sizing: border-box; }
+		</style>
+
+		<table class="widefat striped bcp-types">
 			<thead>
 				<tr>
 					<th><?php esc_html_e( 'Slug', 'backdrop-custom-portfolio' ); ?></th>

@@ -15,6 +15,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - `LICENSE` file.
 
 ### Fixed
+- The Extra Post Types table on the settings page had its headers flush against the edge and uneven padding, because ClassicPress's settings page styles leaked into it. Cells now have even padding and equal column widths.
 - Fatal error "Undefined constant TEMPLATEPATH" on activation: the framework now boots on `after_setup_theme`, after the theme is set up, and reuses a Backdrop theme's application when there is one.
 
 ### Changed
