@@ -4,7 +4,7 @@ Contributors: benlumia007
 Tags: portfolio
 Requires CP: 1.0
 Requires PHP: 7.4
-Stable tag: 1.0.3
+Stable tag: 1.1.0
 License: GPL-2.0-or-later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -46,9 +46,13 @@ The stylesheet is compiled with Vite from `resources/scss/screen.scss`. Source a
 
 == Changelog ==
 
-= Unreleased =
-* Added extra post types, configured from Portfolio -> Settings or with the `bcp/post_types` filter.
+= 1.1.0 =
+* Added extra post types, configured from Portfolio -> Settings or with the `bcp/post_types` filter, each with a menu setting (under Portfolio, its own menu, or hidden).
+* Added all portfolio post types to the At a Glance dashboard widget.
 * Added excerpt and menu order support, and more admin notice labels.
 * Added uninstall cleanup and a clearer notice when dependencies are missing.
-* Replaced Laravel Mix with Vite for building assets.
-* Removed the backdrop-dev/mix dependency; the admin stylesheet is now enqueued directly.
+* Now requires the Backdrop framework 1.x so it can share a request with Backdrop themes such as Prismatic.
+* Replaced Laravel Mix with Vite for building assets, and removed the backdrop-dev/mix dependency.
+
+= 1.0.3 =
+* Previous release.
