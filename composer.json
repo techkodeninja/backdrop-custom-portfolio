@@ -14,13 +14,7 @@
     "autoload": {
         "psr-4": {
             "BCP\\": "app/"
-		},
-        "files": [
-            "app/functions-options.php",
-            "app/functions-rewrites.php",
-            "app/functions-scripts.php",
-            "app/framework.php"
-        ]
+		}
     },
     "require": {
 		"php": ">=7.4",

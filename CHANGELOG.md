@@ -6,6 +6,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+### Fixed
+- The plugin now works with Backdrop framework 1.x and 2.0 themes. When the active theme already provides a framework, the plugin shares it instead of loading its bundled copy (1.x), which previously caused a fatal error (`Cannot redeclare function Backdrop\Attr\attr()`) with 2.0 themes. The bundled framework is now only loaded when no theme framework is present. The plugin's functions are loaded directly instead of through Composer's "files" autoload, and `app/framework.php` is removed (its bootstrap moved into the main plugin file).
+- Regenerated the translation template (`public/lang/backdrop-custom-portfolio.pot`): 118 strings, up from 73, now including all 1.1.0 strings and the current version (1.1.0). `Report-Msgid-Bugs-To` now points at the GitHub issues instead of wordpress.org, and a new `scripts/fix-pot-header.mjs` keeps it that way on every regeneration (node-wp-i18n always writes the wordpress.org address).
+
 ## [1.1.0] - 2026-11-17
 
 ### Added

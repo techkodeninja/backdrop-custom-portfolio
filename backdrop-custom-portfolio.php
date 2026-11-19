@@ -25,26 +25,15 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
- * 2.0 - Required Files
+ * 2.0 - Plugin functions
  *
- * The framework is installed with Composer. If `vendor/` is missing (for example
- * when the plugin is cloned from GitHub and `composer install` hasn't been run),
- * show a notice instead of a fatal error.
+ * These only use WordPress core, so they are safe to load right away. They are
+ * loaded here instead of through Composer's "files" autoload so the framework
+ * bootstrap below can decide whether the bundled framework is needed at all.
  */
-$bcp_autoload = plugin_dir_path( __FILE__ ) . 'vendor/autoload.php';
-
-if ( ! file_exists( $bcp_autoload ) ) {
-	add_action( 'admin_notices', function() {
-		printf(
-			'<div class="notice notice-error"><p>%s</p></div>',
-			esc_html__( 'Backdrop Custom Portfolio is missing its dependencies. Run "composer install" in the plugin folder, or install a release ZIP.', 'backdrop-custom-portfolio' )
-		);
-	} );
-
-	return;
-}
-
-require_once $bcp_autoload;
+require_once plugin_dir_path( __FILE__ ) . 'app/functions-options.php';
+require_once plugin_dir_path( __FILE__ ) . 'app/functions-rewrites.php';
+require_once plugin_dir_path( __FILE__ ) . 'app/functions-scripts.php';
 
 /**
  * 3.0 - Translations
@@ -74,3 +63,91 @@ register_deactivation_hook( __FILE__, function() {
 	delete_option( 'bcp_flush_rewrite_rules' );
 	flush_rewrite_rules();
 } );
+
+/**
+ * 5.0 - Bootstrap the Backdrop framework
+ *
+ * The plugin must work with Backdrop framework 1.x and 2.0 themes, and the two
+ * lines cannot share one request: framework 1.x declares the `Backdrop\Attr`
+ * helpers without guards, while 2.0 guards the same names in its separate
+ * `backdrop-dev/attr` package, so loading both copies fatals with "Cannot
+ * redeclare function Backdrop\Attr\attr()".
+ *
+ * So the bundled framework (1.x, in `vendor/`) is only loaded when no framework
+ * is already present. A Backdrop theme loads its own framework in functions.php,
+ * before `after_setup_theme` runs, so by the time this runs the theme's copy —
+ * 1.x or 2.0 — is already there and this plugin reuses it. The plugin's own
+ * code only uses the framework surface both lines share (`Application`,
+ * `ServiceProvider`, `Bootable`, `booted()` / `app()`), so it runs unchanged
+ * against either one.
+ *
+ * Runs late (priority 20) so a Backdrop theme has already booted its
+ * application when there is one. If `after_setup_theme` has already fired
+ * (for example, while the plugin is being activated), bootstrap right away.
+ */
+if ( did_action( 'after_setup_theme' ) ) {
+	bcp_bootstrap();
+} else {
+	add_action( 'after_setup_theme', 'bcp_bootstrap', 20 );
+}
+
+function bcp_bootstrap(): void {
+
+	// A framework is already loaded (the active theme's, 1.x or 2.0). Use it
+	// and never touch the bundled copy.
+	if ( class_exists( 'Backdrop\Core\Application' ) ) {
+		bcp_register_autoloader();
+	} else {
+		// No theme framework: fall back to the bundled copy (1.x).
+		$bcp_autoload = plugin_dir_path( __FILE__ ) . 'vendor/autoload.php';
+
+		if ( ! file_exists( $bcp_autoload ) ) {
+			add_action( 'admin_notices', function() {
+				printf(
+					'<div class="notice notice-error"><p>%s</p></div>',
+					esc_html__( 'Backdrop Custom Portfolio is missing its dependencies. Run "composer install" in the plugin folder, or install a release ZIP.', 'backdrop-custom-portfolio' )
+				);
+			} );
+
+			return;
+		}
+
+		require_once $bcp_autoload;
+	}
+
+	$bcp = function_exists( 'Backdrop\booted' ) && Backdrop\booted() ? Backdrop\app() : new Backdrop\Core\Application();
+
+	$bcp->provider( BCP\Portfolio\Provider::class );
+	$bcp->provider( BCP\Portfolio\Taxonomies\Provider::class );
+
+	if ( is_admin() ) {
+		$bcp->provider( BCP\Portfolio\Manage\Provider::class );
+		$bcp->provider( BCP\Portfolio\Settings\Provider::class );
+	}
+
+	do_action( 'bcp/bootstrap', $bcp );
+
+	$bcp->boot();
+}
+
+/**
+ * Registers a PSR-4 autoloader for the plugin's own classes (`BCP\`).
+ *
+ * Used when the theme's framework is reused, so the bundled autoloader — which
+ * would also load the bundled framework — is never required.
+ */
+function bcp_register_autoloader(): void {
+
+	spl_autoload_register( function( $class ) {
+
+		if ( 0 !== strpos( $class, 'BCP\\' ) ) {
+			return;
+		}
+
+		$file = plugin_dir_path( __FILE__ ) . 'app/' . str_replace( '\\', '/', substr( $class, 4 ) ) . '.php';
+
+		if ( file_exists( $file ) ) {
+			require $file;
+		}
+	} );
+}

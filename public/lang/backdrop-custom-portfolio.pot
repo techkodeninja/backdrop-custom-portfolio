@@ -1,107 +1,149 @@
-# Copyright (C) 2024 Benjamin Lu
+# Copyright (C) 2026 Benjamin Lu
 # This file is distributed under the same license as the Backdrop Custom Portfolio package.
 msgid ""
 msgstr ""
-"Project-Id-Version: Backdrop Custom Portfolio 1.0.0\n"
-"Report-Msgid-Bugs-To: "
-"https://wordpress.org/support/plugin/backdrop-custom-portfolio\n"
-"POT-Creation-Date: 2024-04-23 16:24:00+00:00\n"
+"Project-Id-Version: Backdrop Custom Portfolio 1.1.0\n"
+"Report-Msgid-Bugs-To: https://github.com/techkodeninja/backdrop-custom-portfolio/issues\n"
+"POT-Creation-Date: 2026-11-19 16:04:24+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"PO-Revision-Date: 2024-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: 2026-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
-"X-Generator: node-wp-i18n 1.2.7\n"
+"X-Generator: node-wp-i18n 1.2.8\n"
 
-#: app/Portfolio/Component.php:32 app/Portfolio/Component.php:45
-msgid "Portfolios"
-msgstr ""
-
-#: app/Portfolio/Component.php:33 app/Portfolio/Component.php:34
-#: app/Portfolio/Component.php:35 app/Portfolio/Settings/Component.php:91
-#: app/functions-options.php:73
+#: app/Portfolio/Component.php:35 app/Portfolio/Settings/Component.php:103
+#: app/functions-options.php:87 app/functions-options.php:159
 msgid "Portfolio"
 msgstr ""
 
-#: app/Portfolio/Component.php:36 app/Portfolio/Component.php:39
-msgid "New Portfolio"
-msgstr ""
-
-#: app/Portfolio/Component.php:37
-msgid "Add New Portfolio"
-msgstr ""
-
-#: app/Portfolio/Component.php:38
-msgid "Edit Portfolio"
+#: app/Portfolio/Component.php:36 app/functions-options.php:160
+msgid "Portfolios"
 msgstr ""
 
 #: app/Portfolio/Component.php:40
-msgid "View Portfolio"
-msgstr ""
-
-#: app/Portfolio/Component.php:41
-msgid "View Portfolios"
-msgstr ""
-
-#: app/Portfolio/Component.php:42
-msgid "Search Portfolios"
-msgstr ""
-
-#: app/Portfolio/Component.php:43
-msgid "No Portfolios found"
-msgstr ""
-
-#: app/Portfolio/Component.php:44
-msgid "No Portfolios found in trash"
-msgstr ""
-
-#: app/Portfolio/Component.php:46
-msgid "Portfolio Image"
-msgstr ""
-
-#: app/Portfolio/Component.php:47
-msgid "Set portfolio image"
-msgstr ""
-
-#: app/Portfolio/Component.php:48
-msgid "Remove portfolio image"
+#. translators: %s: post type name, e.g. Portfolio.
+msgid "New %s"
 msgstr ""
 
 #: app/Portfolio/Component.php:49
-msgid "Use as portfolio image"
-msgstr ""
-
-#: app/Portfolio/Component.php:50
-msgid "Insert into portfolio"
+#. translators: %s: post type name.
+msgid "Add New %s"
 msgstr ""
 
 #: app/Portfolio/Component.php:51
-msgid "Uploaded to this portfolio"
+#. translators: %s: post type name.
+msgid "Edit %s"
 msgstr ""
 
-#: app/Portfolio/Component.php:52
-msgid "Filter portfolios list"
+#: app/Portfolio/Component.php:54 app/Portfolio/Component.php:56
+#. translators: %s: post type name.
+#. translators: %s: post type name, plural.
+msgid "View %s"
 msgstr ""
 
-#: app/Portfolio/Component.php:53
-msgid "Portfolios list navigation"
+#: app/Portfolio/Component.php:58
+#. translators: %s: post type name, plural.
+msgid "Search %s"
 msgstr ""
 
-#: app/Portfolio/Component.php:54
-msgid "Portfolios list"
+#: app/Portfolio/Component.php:60
+#. translators: %s: post type name, plural and lowercase.
+msgid "No %s found"
 msgstr ""
 
-#: app/Portfolio/Manage/Component.php:29
-msgid "Project"
+#: app/Portfolio/Component.php:62
+#. translators: %s: post type name, plural and lowercase.
+msgid "No %s found in trash"
 msgstr ""
 
-#: app/Portfolio/Manage/Component.php:34
+#: app/Portfolio/Component.php:65
+#. translators: %s: post type name.
+msgid "%s Archives"
+msgstr ""
+
+#: app/Portfolio/Component.php:67
+#. translators: %s: post type name.
+msgid "%s Attributes"
+msgstr ""
+
+#: app/Portfolio/Component.php:69
+#. translators: %s: post type name.
+msgid "%s Image"
+msgstr ""
+
+#: app/Portfolio/Component.php:71
+#. translators: %s: post type name.
+msgid "Set %s image"
+msgstr ""
+
+#: app/Portfolio/Component.php:73
+#. translators: %s: post type name.
+msgid "Remove %s image"
+msgstr ""
+
+#: app/Portfolio/Component.php:75
+#. translators: %s: post type name.
+msgid "Use as %s image"
+msgstr ""
+
+#: app/Portfolio/Component.php:77
+#. translators: %s: post type name.
+msgid "Insert into %s"
+msgstr ""
+
+#: app/Portfolio/Component.php:79
+#. translators: %s: post type name.
+msgid "Uploaded to this %s"
+msgstr ""
+
+#: app/Portfolio/Component.php:81
+#. translators: %s: post type name.
+msgid "Filter %s list"
+msgstr ""
+
+#: app/Portfolio/Component.php:83
+#. translators: %s: post type name.
+msgid "%s list navigation"
+msgstr ""
+
+#: app/Portfolio/Component.php:85
+#. translators: %s: post type name.
+msgid "%s list"
+msgstr ""
+
+#: app/Portfolio/Component.php:87
+#. translators: %s: post type name.
+msgid "%s published."
+msgstr ""
+
+#: app/Portfolio/Component.php:89
+#. translators: %s: post type name.
+msgid "%s published privately."
+msgstr ""
+
+#: app/Portfolio/Component.php:91
+#. translators: %s: post type name.
+msgid "%s reverted to draft."
+msgstr ""
+
+#: app/Portfolio/Component.php:93
+#. translators: %s: post type name.
+msgid "%s scheduled."
+msgstr ""
+
+#: app/Portfolio/Component.php:95
+#. translators: %s: post type name.
+msgid "%s updated."
+msgstr ""
+
+#: app/Portfolio/Manage/Component.php:81
 msgid "Thumbnail"
 msgstr ""
 
 #: app/Portfolio/Settings/Component.php:39
-#: app/Portfolio/Settings/Component.php:198
+#: app/Portfolio/Settings/Component.php:330
 msgid "Portfolio Settings"
 msgstr ""
 
@@ -129,27 +171,85 @@ msgstr ""
 msgid "Portfolio Base"
 msgstr ""
 
-#: app/Portfolio/Settings/Component.php:111
+#: app/Portfolio/Settings/Component.php:80
+msgid "Extra Post Types"
+msgstr ""
+
+#: app/Portfolio/Settings/Component.php:81
+msgid "Post Types"
+msgstr ""
+
+#: app/Portfolio/Settings/Component.php:113
+#. translators: %s: the slug that was rejected.
+msgid "\"%s\" is a reserved slug, so the portfolio base was not changed."
+msgstr ""
+
+#: app/Portfolio/Settings/Component.php:140
+#. translators: %s: the slug that was rejected.
+msgid "The post type \"%s\" was skipped because that slug is already in use."
+msgstr ""
+
+#: app/Portfolio/Settings/Component.php:174
 msgid "General portfolio settings for your site."
 msgstr ""
 
-#: app/Portfolio/Settings/Component.php:127
+#: app/Portfolio/Settings/Component.php:190
 msgid ""
 "The name of your portfolio. May be used for the portfolio page title and "
 "other places, depending on your theme."
 msgstr ""
 
-#: app/Portfolio/Settings/Component.php:151
+#: app/Portfolio/Settings/Component.php:214
 msgid ""
 "Your portfolio description. This may be shown by your theme on the "
 "portfolio page."
 msgstr ""
 
-#: app/Portfolio/Settings/Component.php:165
+#: app/Portfolio/Settings/Component.php:228
 msgid "Set up custom permalinks for the portfolio section on your site."
 msgstr ""
 
-#: app/Portfolio/Settings/Component.php:205
+#: app/Portfolio/Settings/Component.php:257
+msgid ""
+"Add more portfolio-style post types, such as Photography or Web Design. "
+"They share the portfolio categories and tags. Clear the slug to remove one."
+msgstr ""
+
+#: app/Portfolio/Settings/Component.php:275
+msgid "Under Portfolio"
+msgstr ""
+
+#: app/Portfolio/Settings/Component.php:276
+msgid "Own menu"
+msgstr ""
+
+#: app/Portfolio/Settings/Component.php:277
+msgid "Hidden"
+msgstr ""
+
+#: app/Portfolio/Settings/Component.php:290
+msgid "Slug"
+msgstr ""
+
+#: app/Portfolio/Settings/Component.php:291
+msgid "Singular"
+msgstr ""
+
+#: app/Portfolio/Settings/Component.php:292
+msgid "Plural"
+msgstr ""
+
+#: app/Portfolio/Settings/Component.php:293
+msgid "Menu"
+msgstr ""
+
+#: app/Portfolio/Settings/Component.php:315
+msgid ""
+"The slug is used in the URL (for example, photography). Menu sets where the "
+"type appears in the admin menu. Save again to get two more empty rows."
+msgstr ""
+
+#: app/Portfolio/Settings/Component.php:337
 msgid "Update Settings"
 msgstr ""
 
@@ -293,6 +393,92 @@ msgstr ""
 msgid "Choose from the most used Tags"
 msgstr ""
 
+#: backdrop-custom-portfolio.php:108
+msgid ""
+"Backdrop Custom Portfolio is missing its dependencies. Run \"composer "
+"install\" in the plugin folder, or install a release ZIP."
+msgstr ""
+
+#: vendor/backdrop-dev/framework/src/Comment/functions-comment.php:284
+msgid "Edit"
+msgstr ""
+
+#: vendor/backdrop-dev/framework/src/Customize/Component.php:90
+msgid "Theme: Global"
+msgstr ""
+
+#: vendor/backdrop-dev/framework/src/Customize/Component.php:91
+msgid "Theme: Header"
+msgstr ""
+
+#: vendor/backdrop-dev/framework/src/Customize/Component.php:92
+msgid "Theme: Content"
+msgstr ""
+
+#: vendor/backdrop-dev/framework/src/Customize/Component.php:93
+msgid "Theme: Footer"
+msgstr ""
+
+#: vendor/backdrop-dev/framework/src/Customize/Component.php:130
+msgid "Branding"
+msgstr ""
+
+#: vendor/backdrop-dev/framework/src/Pagination/Pagination.php:148
+msgid "Previous"
+msgstr ""
+
+#: vendor/backdrop-dev/framework/src/Pagination/Pagination.php:149
+msgid "Next"
+msgstr ""
+
+#: vendor/backdrop-dev/framework/src/Pagination/Pagination.php:541
+msgid "&hellip;"
+msgstr ""
+
+#: vendor/backdrop-dev/framework/src/Site/functions-site.php:291
+msgid "https://wordpress.org"
+msgstr ""
+
+#: vendor/backdrop-dev/framework/src/Site/functions-site.php:292
+msgid "WordPress"
+msgstr ""
+
+#: vendor/backdrop-dev/framework/src/Site/functions-site.php:336
+msgid "https://www.classicpress.net"
+msgstr ""
+
+#: vendor/backdrop-dev/framework/src/Site/functions-site.php:337
+msgid "ClassicPress"
+msgstr ""
+
+#: vendor/backdrop-dev/framework/src/Util/Title.php:88
+msgid "Archives"
+msgstr ""
+
+#: vendor/backdrop-dev/framework/src/Util/Title.php:148
+#. Translators: %s is the search query.
+msgid "Search results for: %s"
+msgstr ""
+
+#: vendor/backdrop-dev/framework/src/Util/Title.php:163
+msgid "404 Not Found"
+msgstr ""
+
+#: vendor/backdrop-dev/framework/src/Util/Title.php:254
+#. Translators: %1$s is the week number and %2$s is the year.
+msgid "Week %1$s of %2$s"
+msgstr ""
+
+#: vendor/backdrop-dev/framework/src/Util/Title.php:322
+#. Translators: %s is the minute.
+msgid "Minute %s"
+msgstr ""
+
+#: vendor/backdrop-dev/framework/src/functions-filters.php:200
+#. Translators: Used as a placeholder for untitled posts on non-singular views.
+msgid "(Untitled)"
+msgstr ""
+
 #. Plugin Name of the plugin/theme
 msgid "Backdrop Custom Portfolio"
 msgstr ""
@@ -311,4 +497,41 @@ msgstr ""
 
 #. Author URI of the plugin/theme
 msgid "https://luthemes.com"
+msgstr ""
+
+#: vendor/backdrop-dev/framework/src/Post/functions-post.php:379
+#. Translators: Separates tags, categories, etc. when displaying a post.
+msgctxt "taxonomy terms separator"
+msgid ", "
+msgstr ""
+
+#: vendor/backdrop-dev/framework/src/Util/Title.php:234
+#: vendor/backdrop-dev/framework/src/Util/Title.php:263
+msgctxt "yearly archives date format"
+msgid "Y"
+msgstr ""
+
+#: vendor/backdrop-dev/framework/src/Util/Title.php:256
+msgctxt "weekly archives date format"
+msgid "W"
+msgstr ""
+
+#: vendor/backdrop-dev/framework/src/Util/Title.php:283
+msgctxt "daily archives date format"
+msgid "F j, Y"
+msgstr ""
+
+#: vendor/backdrop-dev/framework/src/Util/Title.php:302
+msgctxt "hour archives time format"
+msgid "g a"
+msgstr ""
+
+#: vendor/backdrop-dev/framework/src/Util/Title.php:324
+msgctxt "minute archives time format"
+msgid "i"
+msgstr ""
+
+#: vendor/backdrop-dev/framework/src/Util/Title.php:344
+msgctxt "minute and hour archives time format"
+msgid "g:i a"
 msgstr ""
