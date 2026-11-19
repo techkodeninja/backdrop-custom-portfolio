@@ -14,15 +14,15 @@ namespace BCP\Portfolio\Manage;
 use Backdrop\Core\ServiceProvider;
 
 /**
- * Sidebar Provider.
+ * Manage Provider.
  *
- * @since  1..0.0
+ * @since  1.0.0
  * @access public
  */
 class Provider extends ServiceProvider {
 
 	/**
-	 * Binds the implementation of the attributes contract to the container.
+	 * Binds the manage component to the container.
 	 *
 	 * @since  1.0.0
 	 * @access public
@@ -34,7 +34,7 @@ class Provider extends ServiceProvider {
 	}
 
 	/**
-	 * Boots the implementation of the attributes contract to the container.
+	 * Boots the manage component.
 	 *
 	 * @since  1.0.0
 	 * @access public

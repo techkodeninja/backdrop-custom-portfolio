@@ -107,7 +107,18 @@ class Component implements Bootable {
 		$base = implode( '/', array_filter( array_map( 'sanitize_title', explode( '/', trim( $base, '/' ) ) ) ) );
 		$base = '' !== $base ? $base : 'portfolio';
 
-		if ( in_array( strtok( $base, '/' ), $reserved, true ) ) {
+		// Every segment of the base must be checked, not just the first one:
+		// a base like "work/page" would otherwise slip a reserved slug in.
+		$base_is_reserved = false;
+
+		foreach ( explode( '/', $base ) as $segment ) {
+			if ( in_array( $segment, $reserved, true ) ) {
+				$base_is_reserved = true;
+				break;
+			}
+		}
+
+		if ( $base_is_reserved ) {
 			add_settings_error( 'bcp_settings', 'bcp_reserved_base', sprintf(
 				/* translators: %s: the slug that was rejected. */
 				esc_html__( '"%s" is a reserved slug, so the portfolio base was not changed.', 'backdrop-custom-portfolio' ),
@@ -124,6 +135,7 @@ class Component implements Bootable {
 
 		// Extra post types. Rows without a slug are dropped, which is how one is removed.
 		$extra = [];
+		$names = [];
 		$rows  = isset( $settings['extra_types'] ) && is_array( $settings['extra_types'] ) ? $settings['extra_types'] : [];
 
 		foreach ( $rows as $row ) {
@@ -143,6 +155,23 @@ class Component implements Bootable {
 				continue;
 			}
 
+			// Post type names are limited to 20 characters, so two different
+			// slugs can shorten to the same name. Tell the user instead of
+			// silently dropping the second one.
+			$name = bcp_get_extra_type_name( $slug );
+
+			if ( isset( $names[ $name ] ) ) {
+				add_settings_error( 'bcp_settings', 'bcp_collision_' . $slug, sprintf(
+					/* translators: 1: the slug that was rejected, 2: the slug it collides with. */
+					esc_html__( 'The post type "%1$s" was skipped because its name collides with "%2$s" after shortening.', 'backdrop-custom-portfolio' ),
+					esc_html( $slug ),
+					esc_html( $names[ $name ] )
+				) );
+				continue;
+			}
+
+			$names[ $name ] = $slug;
+
 			$singular = sanitize_text_field( $row['singular'] ?? '' );
 			$plural   = sanitize_text_field( $row['plural'] ?? '' );
 
@@ -154,6 +183,12 @@ class Component implements Bootable {
 				'singular' => '' !== $singular ? $singular : ucfirst( $slug ),
 				'plural'   => '' !== $plural ? $plural : ( '' !== $singular ? $singular : ucfirst( $slug ) ),
 			];
+		}
+
+		if ( count( $extra ) > 10 ) {
+			add_settings_error( 'bcp_settings', 'bcp_too_many_types',
+				esc_html__( 'Only the first 10 extra post types were kept; the rest were dropped.', 'backdrop-custom-portfolio' )
+			);
 		}
 
 		$clean['extra_types'] = array_values( array_slice( $extra, 0, 10 ) );
@@ -277,13 +312,6 @@ class Component implements Bootable {
 			'hidden'    => esc_html__( 'Hidden', 'backdrop-custom-portfolio' ),
 		]; ?>
 
-		<style>
-			.bcp-types { width: 100%; max-width: 760px; table-layout: fixed; border-collapse: collapse; }
-			.bcp-types th, .bcp-types td { width: auto; padding: 10px 12px; text-align: left; vertical-align: middle; }
-			.bcp-types thead th { padding-bottom: 8px; font-weight: 600; }
-			.bcp-types input, .bcp-types select { width: 100%; max-width: none; margin: 0; box-sizing: border-box; }
-		</style>
-
 		<table class="widefat striped bcp-types">
 			<thead>
 				<tr>
@@ -343,5 +371,23 @@ class Component implements Bootable {
 	public function boot(): void {
 
 		add_action( 'admin_menu', array( $this, 'admin_menu' ) );
+		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_styles' ) );
+	}
+
+	/**
+	 * Loads the admin stylesheet on the settings page.
+	 *
+	 * @since  1.1.0
+	 * @access public
+	 * @param  string  $hook  The current admin page hook suffix.
+	 * @return void
+	 */
+	public function enqueue_styles( $hook ): void {
+
+		if ( $hook !== $this->page_hook ) {
+			return;
+		}
+
+		\BCP\bcp_enqueue_admin_style();
 	}
 }

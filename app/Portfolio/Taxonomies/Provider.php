@@ -17,17 +17,17 @@ namespace BCP\Portfolio\Taxonomies;
 use Backdrop\Core\ServiceProvider;
 
 /**
- * Attr provider class.
+ * Taxonomies Provider.
  *
- * @since  5.0.0
+ * @since  1.0.0
  * @access public
  */
 class Provider extends ServiceProvider {
 
 	/**
-	 * Binds the implementation of the attributes contract to the container.
+	 * Binds the taxonomy component to the container.
 	 *
-	 * @since  1..0.0
+	 * @since  1.0.0
 	 * @access public
 	 * @return void
 	 */

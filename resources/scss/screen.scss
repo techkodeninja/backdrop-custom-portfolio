@@ -2,3 +2,31 @@ img.attachment-post-thumbnail.size-post-thumbnail.wp-post-image {
     height: auto;
     max-width: 100%
 }
+
+.bcp-types {
+    width: 100%;
+    max-width: 760px;
+    table-layout: fixed;
+    border-collapse: collapse;
+}
+
+.bcp-types th,
+.bcp-types td {
+    width: auto;
+    padding: 10px 12px;
+    text-align: left;
+    vertical-align: middle;
+}
+
+.bcp-types thead th {
+    padding-bottom: 8px;
+    font-weight: 600;
+}
+
+.bcp-types input,
+.bcp-types select {
+    width: 100%;
+    max-width: none;
+    margin: 0;
+    box-sizing: border-box;
+}

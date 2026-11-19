@@ -14,17 +14,17 @@ namespace BCP\Portfolio;
 use Backdrop\Core\ServiceProvider;
 
 /**
- * Sidebar Provider.
+ * Portfolio Provider.
  *
- * @since  1..0.0
+ * @since  1.0.0
  * @access public
  */
 class Provider extends ServiceProvider {
 
 	/**
-	 * Binds the implementation of the attributes contract to the container.
+	 * Binds the portfolio component to the container.
 	 *
-	 * @since  1..0.0
+	 * @since  1.0.0
 	 * @access public
 	 * @return void
 	 */
@@ -34,9 +34,9 @@ class Provider extends ServiceProvider {
 	}
 
 	/**
-	 * Boots the implementation of the attributes contract to the container.
+	 * Boots the portfolio component.
 	 *
-	 * @since  1..0.0
+	 * @since  1.0.0
 	 * @access public
 	 * @return void
 	 */

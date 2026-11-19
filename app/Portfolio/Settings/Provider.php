@@ -14,17 +14,17 @@ namespace BCP\Portfolio\Settings;
 use Backdrop\Core\ServiceProvider;
 
 /**
- * Sidebar Provider.
+ * Settings Provider.
  *
- * @since  1..0.0
+ * @since  1.0.0
  * @access public
  */
 class Provider extends ServiceProvider {
 
 	/**
-	 * Binds the implementation of the attributes contract to the container.
+	 * Binds the settings component to the container.
 	 *
-	 * @since  1..0.0
+	 * @since  1.0.0
 	 * @access public
 	 * @return void
 	 */
@@ -34,9 +34,9 @@ class Provider extends ServiceProvider {
 	}
 
 	/**
-	 * Boots the implementation of the attributes contract to the container.
+	 * Boots the settings component.
 	 *
-	 * @since  1..0.0
+	 * @since  1.0.0
 	 * @access public
 	 * @return void
 	 */

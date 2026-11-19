@@ -38,9 +38,11 @@ require_once plugin_dir_path( __FILE__ ) . 'app/functions-scripts.php';
 /**
  * 3.0 - Translations
  */
-add_action( 'init', function() {
+function bcp_load_textdomain(): void {
 	load_plugin_textdomain( 'backdrop-custom-portfolio', false, dirname( plugin_basename( __FILE__ ) ) . '/public/lang' );
-} );
+}
+
+add_action( 'init', 'bcp_load_textdomain' );
 
 /**
  * 4.0 - Activation and Deactivation
@@ -103,6 +105,10 @@ function bcp_bootstrap(): void {
 
 		if ( ! file_exists( $bcp_autoload ) ) {
 			add_action( 'admin_notices', function() {
+				// Make sure the string is translated even if this runs
+				// before the text domain loads on init.
+				bcp_load_textdomain();
+
 				printf(
 					'<div class="notice notice-error"><p>%s</p></div>',
 					esc_html__( 'Backdrop Custom Portfolio is missing its dependencies. Run "composer install" in the plugin folder, or install a release ZIP.', 'backdrop-custom-portfolio' )
