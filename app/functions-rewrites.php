@@ -40,13 +40,13 @@ add_action( 'update_option_bcp_settings', function() { update_option( 'bcp_flush
 /**
  * Returns the project rewrite slug used for single projects.
  *
- * @since  1.0.0
+ * @since       1.0.0
+ * @deprecated  Use bcp_get_portfolio_rewrite_base() instead. The
+ *              `bcp_get_project_rewrite_slug` filter still works.
  * @access public
  * @return string
  */
 function bcp_get_portfolio_rewrite_slug(): string {
 
-	$slug = bcp_get_portfolio_rewrite_base();
-
-	return apply_filters( 'bcp_get_project_rewrite_slug', $slug );
+	return apply_filters( 'bcp_get_project_rewrite_slug', bcp_get_portfolio_rewrite_base() );
 }

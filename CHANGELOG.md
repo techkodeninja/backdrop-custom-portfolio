@@ -9,6 +9,16 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 ### Fixed
 - The plugin now works with Backdrop framework 1.x and 2.0 themes. When the active theme already provides a framework, the plugin shares it instead of loading its bundled copy (1.x), which previously caused a fatal error (`Cannot redeclare function Backdrop\Attr\attr()`) with 2.0 themes. The bundled framework is now only loaded when no theme framework is present. The plugin's functions are loaded directly instead of through Composer's "files" autoload, and `app/framework.php` is removed (its bootstrap moved into the main plugin file).
 - Regenerated the translation template (`public/lang/backdrop-custom-portfolio.pot`): 118 strings, up from 73, now including all 1.1.0 strings and the current version (1.1.0). `Report-Msgid-Bugs-To` now points at the GitHub issues instead of wordpress.org, and a new `scripts/fix-pot-header.mjs` keeps it that way on every regeneration (node-wp-i18n always writes the wordpress.org address).
+- Portfolio categories and tags now live under the portfolio base (`/{base}/portfolio-category/{term}/` and `/{base}/portfolio-tag/{term}/`) as the rewrite base docblock always promised, instead of sitting at the top level. After updating, re-save the portfolio settings or permalinks once so the rewrite rules pick the new URLs up.
+- Two extra post types whose slugs shorten to the same post type name no longer silently drop the second one: saving the settings now reports which slug collided with which.
+- Saving more than 10 extra post types now says so: only the first 10 are kept, and the settings page reports that the rest were dropped instead of silently discarding them.
+- The rewrite-base reserved check now inspects every segment, so a base like `work/page` is rejected instead of slipping a reserved slug in past the first-segment check.
+- `bcp_get_portfolio_rewrite_slug()` is now a deprecated alias for `bcp_get_portfolio_rewrite_base()` — one function and one filter for the value instead of two of each. The `bcp_get_project_rewrite_slug` filter still works.
+- The extra post types table no longer uses an inline `<style>` block: its rules moved into the admin stylesheet (`resources/scss/screen.scss` and the built `public/assets/css/screen.css`), which is now also enqueued on the settings page.
+- readme.txt now states `Tested up to: 6.2`.
+- Portfolio post types use the `dashicons-portfolio` menu icon instead of `dashicons-category`.
+- Provider docblocks corrected (`1..0.0` / `5.0.0` versions, "Sidebar Provider" / "Attr provider class" copy-paste).
+- The missing-dependencies admin notice now loads the text domain before translating, so it can no longer show untranslated.
 
 ## [1.1.0] - 2026-11-17
 

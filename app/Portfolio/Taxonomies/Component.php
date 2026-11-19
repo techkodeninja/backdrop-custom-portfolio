@@ -100,6 +100,10 @@ class Component implements Bootable {
      */
     public function create_taxonomies() {
 
+        // Categories and tags live under the portfolio base, so their URLs
+        // are /{base}/portfolio-category/{term}/ and /{base}/portfolio-tag/{term}/.
+		$base = bcp_get_portfolio_rewrite_base();
+
         // Set up the arguments for the portfolio project post type.
 		$cat_args = [
 			'labels'            => $this->category_labels(),
@@ -110,6 +114,7 @@ class Component implements Bootable {
 			'show_admin_column' => true,
 			'hierarchical'      => true,
 			'show_in_rest'      => true,
+			'rewrite'           => [ 'slug' => $base . '/' . bcp_get_setting( 'portfolio_category' ), 'with_front' => false ],
 		];
 
 		$tag_args = [
@@ -121,6 +126,7 @@ class Component implements Bootable {
 			'show_admin_column' => true,
 			'hierarchical'      => false,
 			'show_in_rest'      => true,
+			'rewrite'           => [ 'slug' => $base . '/' . bcp_get_setting( 'portfolio_tag' ), 'with_front' => false ],
 		];
 
         // Categories and tags are shared by every portfolio post type.

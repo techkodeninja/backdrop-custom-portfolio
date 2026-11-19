@@ -118,7 +118,7 @@ class Component implements Bootable {
 				'labels'       => $this->portfolio_labels( $config['singular'], $config['plural'], $type ),
 				'public'       => true,
 				'has_archive'  => true,
-				'menu_icon'    => 'dashicons-category',
+				'menu_icon'    => 'dashicons-portfolio',
 				'show_ui'      => true,
 				'show_in_rest' => true,
 				'supports'     => [ 'title', 'editor', 'thumbnail', 'author', 'excerpt', 'page-attributes' ],

@@ -152,7 +152,7 @@ function bcp_get_post_types(): array {
 
 	$settings = bcp_get_settings();
 	$main     = bcp_get_setting( 'portfolio_type' );
-	$base     = bcp_get_portfolio_rewrite_slug();
+	$base     = bcp_get_portfolio_rewrite_base();
 
 	$types = [
 		$main => [
