@@ -11,4 +11,5 @@ if ( ! defined( 'WP_UNINSTALL_PLUGIN' ) ) {
 }
 
 delete_option( 'bcp_settings' );
+delete_option( 'bcp_post_types' );
 delete_option( 'bcp_flush_rewrite_rules' );

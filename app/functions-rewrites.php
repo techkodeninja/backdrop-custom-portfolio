@@ -38,6 +38,18 @@ add_action( 'add_option_bcp_settings',    function() { update_option( 'bcp_flush
 add_action( 'update_option_bcp_settings', function() { update_option( 'bcp_flush_rewrite_rules', true ); } );
 
 /**
+ * Flags the rewrite rules for a flush when the post type registry changes.
+ * The flush runs on the next request, after the post types have been
+ * registered with the new slugs.
+ *
+ * @since  2.0.0
+ * @access public
+ * @return void
+ */
+add_action( 'add_option_bcp_post_types',    function() { update_option( 'bcp_flush_rewrite_rules', true ); } );
+add_action( 'update_option_bcp_post_types', function() { update_option( 'bcp_flush_rewrite_rules', true ); } );
+
+/**
  * Returns the project rewrite slug used for single projects.
  *
  * @since       1.0.0

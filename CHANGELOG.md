@@ -4,7 +4,21 @@ All notable changes to this project are documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
-## [Unreleased]
+## [2.0.0] - Unreleased
+
+### Added
+- A Post Types manager under the new top-level **Portfolio** menu: list, add, edit and delete post types from **Portfolio → Post Types**, instead of the extra-types table on the settings page. Every post type is a row in one registry (`bcp_post_types`); Portfolio is the seeded first row, not special code.
+- A rewrite slug field per post type. Leave it empty and the type lives under the portfolio base (`/{base}/{slug}/`, or just `/{base}/` for the type whose slug is the base); enter a plain slug such as `themes` to put its archive at the top level instead.
+- A menu icon field per post type (a Dashicon class, used when the type has its own menu).
+- Category and tag slugs are now settings on **Portfolio → Settings → Permalinks**, alongside the portfolio base.
+
+### Changed
+- Post types moved from the `bcp_settings` option (a fixed main type plus up to 10 extra types) into the `bcp_post_types` registry. The settings option now holds only the shared settings: title, description, rewrite base, and the category/tag slugs.
+- The 10-extra-types cap is gone: a manager with an arbitrary cap is wrong.
+- New post types default to living under the portfolio base (`/{base}/{slug}/`). Post types created in 1.x keep the root-level URL they had (`/{slug}/`), stored as a rewrite override — edit a type to move it under the base.
+- The portfolio base is now the URL prefix for the categories and tags and the default prefix for new post types. Post types already in the registry keep their own rewrite slug when the base changes; edit a type to move it.
+- Updating from 1.x migrates once, on first load: the main type and the extra types become registry rows with the same post type names and rewrite slugs, the shared settings carry over, and the rewrite rules are flushed. The old `portfolio_type` and `extra_types` settings are removed.
+- The `bcp/post_types` filter still works the same way: it filters the registry output. Entries may also carry `menu` and `icon` keys now.
 
 ### Fixed
 - The plugin now works with Backdrop framework 1.x and 2.0 themes. When the active theme already provides a framework, the plugin shares it instead of loading its bundled copy (1.x), which previously caused a fatal error (`Cannot redeclare function Backdrop\Attr\attr()`) with 2.0 themes. The bundled framework is now only loaded when no theme framework is present. The plugin's functions are loaded directly instead of through Composer's "files" autoload, and `app/framework.php` is removed (its bootstrap moved into the main plugin file).

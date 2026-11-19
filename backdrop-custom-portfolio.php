@@ -2,12 +2,12 @@
 /**
  * Plugin Name: Backdrop Custom Portfolio
  * Plugin URI:  https://luthemes.com/portfolio/backdrop-custom-portfolio
- * Description: A simple way to create custom portfolio.
+ * Description: Create and manage custom post types for your portfolio.
  * Author:      Benjamin Lu
  * Author URI:  https://luthemes.com
  * Text Domain: backdrop-custom-portfolio
  * Domain Path: /public/lang
- * Version:     1.1.0
+ * Version:     2.0.0
  * Requires CP: 1.0
  * Requires PHP: 7.4
  *
@@ -128,6 +128,7 @@ function bcp_bootstrap(): void {
 
 	if ( is_admin() ) {
 		$bcp->provider( BCP\Portfolio\Manage\Provider::class );
+		$bcp->provider( BCP\Portfolio\PostTypes\Provider::class );
 		$bcp->provider( BCP\Portfolio\Settings\Provider::class );
 	}
 

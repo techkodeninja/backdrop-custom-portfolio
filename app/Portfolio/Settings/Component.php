@@ -33,9 +33,9 @@ class Component implements Bootable {
 	 */
 	public function admin_menu() {
 
-		// Create the settings page.
+		// Create the settings page under the Portfolio menu.
 		$this->page_hook = add_submenu_page(
-			'edit.php?post_type=' . bcp_get_setting( 'portfolio_type' ),
+			'bcp-portfolio',
 			esc_html__( 'Portfolio Settings', 'backdrop-custom-portfolio' ),
 			esc_html__( 'Settings',           'backdrop-custom-portfolio' ),
 			'manage_options',
@@ -75,10 +75,8 @@ class Component implements Bootable {
 
 		// Permalinks section fields.
 		add_settings_field( 'portfolio_rewrite_base', esc_html__( 'Portfolio Base', 'backdrop-custom-portfolio' ), array( $this, 'field_portfolio_rewrite_base' ), $this->page_hook, 'permalinks' );
-
-		// Extra post types section.
-		add_settings_section( 'extra_types', esc_html__( 'Extra Post Types', 'backdrop-custom-portfolio' ), array( $this, 'section_extra_types' ), $this->page_hook );
-		add_settings_field( 'extra_types', esc_html__( 'Post Types', 'backdrop-custom-portfolio' ), array( $this, 'field_extra_types' ), $this->page_hook, 'extra_types' );
+		add_settings_field( 'portfolio_category', esc_html__( 'Category Slug', 'backdrop-custom-portfolio' ), array( $this, 'field_portfolio_category' ), $this->page_hook, 'permalinks' );
+		add_settings_field( 'portfolio_tag', esc_html__( 'Tag Slug', 'backdrop-custom-portfolio' ), array( $this, 'field_portfolio_tag' ), $this->page_hook, 'permalinks' );
 	}
 
 	/**
@@ -95,12 +93,9 @@ class Component implements Bootable {
 		$current  = bcp_get_settings();
 		$reserved = bcp_get_reserved_slugs();
 
-		// Anything not on the form (post type and taxonomy names) is kept as is.
-		$clean = $current;
-
 		// Title.
-		$title                    = isset( $settings['portfolio_title'] ) ? sanitize_text_field( $settings['portfolio_title'] ) : '';
-		$clean['portfolio_title'] = '' !== $title ? $title : esc_html__( 'Portfolio', 'backdrop-custom-portfolio' );
+		$title = isset( $settings['portfolio_title'] ) ? sanitize_text_field( $settings['portfolio_title'] ) : '';
+		$title = '' !== $title ? $title : esc_html__( 'Portfolio', 'backdrop-custom-portfolio' );
 
 		// Rewrite base: lowercase slug segments, no leading or trailing slashes.
 		$base = isset( $settings['portfolio_rewrite_base'] ) ? sanitize_text_field( $settings['portfolio_rewrite_base'] ) : '';
@@ -127,73 +122,41 @@ class Component implements Bootable {
 			$base = $current['portfolio_rewrite_base'];
 		}
 
-		$clean['portfolio_rewrite_base'] = $base;
-
 		// Kill evil scripts.
-		$description                    = isset( $settings['portfolio_description'] ) ? $settings['portfolio_description'] : '';
-		$clean['portfolio_description'] = stripslashes( wp_filter_post_kses( addslashes( $description ) ) );
+		$description = isset( $settings['portfolio_description'] ) ? $settings['portfolio_description'] : '';
+		$description = stripslashes( wp_filter_post_kses( addslashes( $description ) ) );
 
-		// Extra post types. Rows without a slug are dropped, which is how one is removed.
-		$extra = [];
-		$names = [];
-		$rows  = isset( $settings['extra_types'] ) && is_array( $settings['extra_types'] ) ? $settings['extra_types'] : [];
+		// Taxonomy slugs: they sit under the base, so they must be plain slugs
+		// that are not reserved and not the same as each other.
+		$category = isset( $settings['portfolio_category'] ) ? sanitize_title( $settings['portfolio_category'] ) : '';
 
-		foreach ( $rows as $row ) {
-
-			$slug = sanitize_title( $row['slug'] ?? '' );
-
-			if ( '' === $slug ) {
-				continue;
-			}
-
-			if ( $slug === $base || in_array( $slug, $reserved, true ) || isset( $extra[ $slug ] ) ) {
-				add_settings_error( 'bcp_settings', 'bcp_bad_type_' . $slug, sprintf(
-					/* translators: %s: the slug that was rejected. */
-					esc_html__( 'The post type "%s" was skipped because that slug is already in use.', 'backdrop-custom-portfolio' ),
-					esc_html( $slug )
-				) );
-				continue;
-			}
-
-			// Post type names are limited to 20 characters, so two different
-			// slugs can shorten to the same name. Tell the user instead of
-			// silently dropping the second one.
-			$name = bcp_get_extra_type_name( $slug );
-
-			if ( isset( $names[ $name ] ) ) {
-				add_settings_error( 'bcp_settings', 'bcp_collision_' . $slug, sprintf(
-					/* translators: 1: the slug that was rejected, 2: the slug it collides with. */
-					esc_html__( 'The post type "%1$s" was skipped because its name collides with "%2$s" after shortening.', 'backdrop-custom-portfolio' ),
-					esc_html( $slug ),
-					esc_html( $names[ $name ] )
-				) );
-				continue;
-			}
-
-			$names[ $name ] = $slug;
-
-			$singular = sanitize_text_field( $row['singular'] ?? '' );
-			$plural   = sanitize_text_field( $row['plural'] ?? '' );
-
-			$menu = $row['menu'] ?? 'portfolio';
-
-			$extra[ $slug ] = [
-				'slug'     => $slug,
-				'menu'     => in_array( $menu, bcp_get_menu_choices(), true ) ? $menu : 'portfolio',
-				'singular' => '' !== $singular ? $singular : ucfirst( $slug ),
-				'plural'   => '' !== $plural ? $plural : ( '' !== $singular ? $singular : ucfirst( $slug ) ),
-			];
+		if ( '' === $category || in_array( $category, $reserved, true ) ) {
+			add_settings_error( 'bcp_settings', 'bcp_bad_category', sprintf(
+				/* translators: %s: the slug that was rejected. */
+				esc_html__( '"%s" is not a usable category slug, so it was not changed.', 'backdrop-custom-portfolio' ),
+				esc_html( $category )
+			) );
+			$category = $current['portfolio_category'];
 		}
 
-		if ( count( $extra ) > 10 ) {
-			add_settings_error( 'bcp_settings', 'bcp_too_many_types',
-				esc_html__( 'Only the first 10 extra post types were kept; the rest were dropped.', 'backdrop-custom-portfolio' )
-			);
+		$tag = isset( $settings['portfolio_tag'] ) ? sanitize_title( $settings['portfolio_tag'] ) : '';
+
+		if ( '' === $tag || in_array( $tag, $reserved, true ) || $tag === $category ) {
+			add_settings_error( 'bcp_settings', 'bcp_bad_tag', sprintf(
+				/* translators: %s: the slug that was rejected. */
+				esc_html__( '"%s" is not a usable tag slug, so it was not changed.', 'backdrop-custom-portfolio' ),
+				esc_html( $tag )
+			) );
+			$tag = $current['portfolio_tag'];
 		}
 
-		$clean['extra_types'] = array_values( array_slice( $extra, 0, 10 ) );
-
-		return $clean;
+		return [
+			'portfolio_title'        => $title,
+			'portfolio_description'  => $description,
+			'portfolio_rewrite_base' => $base,
+			'portfolio_category'     => $category,
+			'portfolio_tag'          => $tag,
+		];
 	}
 
 	/**
@@ -260,7 +223,7 @@ class Component implements Bootable {
 	public function section_permalinks() { ?>
 
 		<p class="description">
-			<?php esc_html_e( 'Set up custom permalinks for the portfolio section on your site.', 'backdrop-custom-portfolio' ); ?>
+			<?php esc_html_e( 'The base is the URL prefix for the portfolio categories and tags, and the default prefix for new post types. Post types already in the registry keep their own rewrite slug when the base changes — edit a type to move it.', 'backdrop-custom-portfolio' ); ?>
 		</p>
 	<?php }
 
@@ -280,68 +243,33 @@ class Component implements Bootable {
 	<?php }
 
 	/**
-	 * Extra post types section callback.
+	 * Portfolio category slug field callback.
 	 *
-	 * @since  1.1.0
+	 * @since  2.0.0
 	 * @access public
 	 * @return void
 	 */
-	public function section_extra_types() { ?>
+	public function field_portfolio_category() { ?>
 
-		<p class="description">
-			<?php esc_html_e( 'Add more portfolio-style post types, such as Photography or Web Design. They share the portfolio categories and tags. Clear the slug to remove one.', 'backdrop-custom-portfolio' ); ?>
-		</p>
+		<label>
+			<code><?php echo esc_url( home_url( '/' . bcp_get_portfolio_rewrite_base() . '/' ) ); ?></code>
+			<input type="text" class="regular-text code" name="bcp_settings[portfolio_category]" value="<?php echo esc_attr( bcp_get_setting( 'portfolio_category' ) ); ?>" />
+		</label>
 	<?php }
 
 	/**
-	 * Extra post types field callback.
+	 * Portfolio tag slug field callback.
 	 *
-	 * @since  1.1.0
+	 * @since  2.0.0
 	 * @access public
 	 * @return void
 	 */
-	public function field_extra_types() {
+	public function field_portfolio_tag() { ?>
 
-		$rows   = array_values( bcp_get_settings()['extra_types'] );
-		$rows[] = [];
-		$rows[] = [];
-
-		$menus = [
-			'portfolio' => esc_html__( 'Under Portfolio', 'backdrop-custom-portfolio' ),
-			'own'       => esc_html__( 'Own menu', 'backdrop-custom-portfolio' ),
-			'hidden'    => esc_html__( 'Hidden', 'backdrop-custom-portfolio' ),
-		]; ?>
-
-		<table class="widefat striped bcp-types">
-			<thead>
-				<tr>
-					<th><?php esc_html_e( 'Slug', 'backdrop-custom-portfolio' ); ?></th>
-					<th><?php esc_html_e( 'Singular', 'backdrop-custom-portfolio' ); ?></th>
-					<th><?php esc_html_e( 'Plural', 'backdrop-custom-portfolio' ); ?></th>
-					<th><?php esc_html_e( 'Menu', 'backdrop-custom-portfolio' ); ?></th>
-				</tr>
-			</thead>
-			<tbody>
-				<?php foreach ( $rows as $i => $row ) : ?>
-					<tr>
-						<td><input type="text" class="regular-text code" name="bcp_settings[extra_types][<?php echo (int) $i; ?>][slug]" value="<?php echo esc_attr( $row['slug'] ?? '' ); ?>" /></td>
-						<td><input type="text" class="regular-text" name="bcp_settings[extra_types][<?php echo (int) $i; ?>][singular]" value="<?php echo esc_attr( $row['singular'] ?? '' ); ?>" /></td>
-						<td><input type="text" class="regular-text" name="bcp_settings[extra_types][<?php echo (int) $i; ?>][plural]" value="<?php echo esc_attr( $row['plural'] ?? '' ); ?>" /></td>
-						<td>
-							<select name="bcp_settings[extra_types][<?php echo (int) $i; ?>][menu]">
-								<?php foreach ( $menus as $value => $label ) : ?>
-									<option value="<?php echo esc_attr( $value ); ?>" <?php selected( $row['menu'] ?? 'portfolio', $value ); ?>><?php echo esc_html( $label ); ?></option>
-								<?php endforeach; ?>
-							</select>
-						</td>
-					</tr>
-				<?php endforeach; ?>
-			</tbody>
-		</table>
-
-		<p class="description">
-			<?php esc_html_e( 'The slug is used in the URL (for example, photography). Menu sets where the type appears in the admin menu. Save again to get two more empty rows.', 'backdrop-custom-portfolio' ); ?>
-		</p>
+		<label>
+			<code><?php echo esc_url( home_url( '/' . bcp_get_portfolio_rewrite_base() . '/' ) ); ?></code>
+			<input type="text" class="regular-text code" name="bcp_settings[portfolio_tag]" value="<?php echo esc_attr( bcp_get_setting( 'portfolio_tag' ) ); ?>" />
+		</label>
 	<?php }
 
 	/**
