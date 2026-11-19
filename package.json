@@ -19,7 +19,7 @@
     "export": "node scripts/export.mjs",
     "i18n": "npm run i18n:textdomain && npm run i18n:pot",
     "i18n:textdomain": "npx wpi18n addtextdomain --exclude=vendor,node_modules",
-    "i18n:pot": "npx wpi18n makepot --domain-path=/public/lang"
+    "i18n:pot": "npx wpi18n makepot --domain-path=/public/lang && node scripts/fix-pot-header.mjs"
   },
   "type": "module",
   "devDependencies": {
