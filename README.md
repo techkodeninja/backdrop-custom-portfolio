@@ -8,6 +8,8 @@ A portfolio management plugin for ClassicPress, built for creative people such a
 - ClassicPress 1.0 or later
 - [Composer](https://getcomposer.org/) and [Node.js](https://nodejs.org/) for development
 
+Works with Backdrop framework 1.x and 2.0 themes: the plugin shares the theme's framework when there is one and uses its bundled copy otherwise.
+
 ## Installation
 
 1. In your admin panel, go to **Plugins → Add New** and click **Upload Plugin**.
