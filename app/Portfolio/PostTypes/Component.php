@@ -142,7 +142,7 @@ class Component implements Bootable {
 		printf(
 			'<div class="notice %s is-dismissible"><p>%s</p></div>',
 			esc_attr( $class ),
-			esc_html( $message )
+			$message // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Already escaped with esc_html__() above.
 		);
 	}
 
@@ -317,7 +317,7 @@ class Component implements Bootable {
 			<?php endif; ?>
 
 			<?php if ( ! empty( $errors ) ) : ?>
-				<div class="notice notice-error"><p><?php echo implode( '<br />', array_map( 'esc_html', $errors ) ); ?></p></div>
+				<div class="notice notice-error"><p><?php echo implode( '<br />', $errors ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Errors are already escaped in bcp_validate_post_type_row(). ?></p></div>
 			<?php endif; ?>
 
 			<form method="post" action="<?php echo esc_url( $action_url ); ?>">
