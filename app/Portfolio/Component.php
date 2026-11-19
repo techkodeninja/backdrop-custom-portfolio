@@ -95,16 +95,11 @@ class Component implements Bootable {
 			'item_updated'          => sprintf( esc_html__( '%s updated.', 'backdrop-custom-portfolio' ), $singular ),
 		];
 
-		// The main portfolio keeps its original singular menu label.
-		if ( $type && bcp_get_setting( 'portfolio_type' ) === $type ) {
-			$labels['menu_name'] = $singular;
-		}
-
 		return apply_filters( 'bcp/portfolio/labels', $labels, $type );
 	}
 
 	/**
-	 * Registers the main portfolio post type and any extra ones.
+	 * Registers every post type in the registry.
 	 *
 	 * @since  1.0.0
 	 * @access public
@@ -118,24 +113,23 @@ class Component implements Bootable {
 				'labels'       => $this->portfolio_labels( $config['singular'], $config['plural'], $type ),
 				'public'       => true,
 				'has_archive'  => true,
-				'menu_icon'    => 'dashicons-portfolio',
+				'menu_icon'    => $config['icon'] ?? 'dashicons-portfolio',
 				'show_ui'      => true,
 				'show_in_rest' => true,
 				'supports'     => [ 'title', 'editor', 'thumbnail', 'author', 'excerpt', 'page-attributes' ],
 				'rewrite'      => [ 'with_front' => false, 'slug' => $config['rewrite'] ]
 			];
 
-			// Extra post types go under the main Portfolio menu unless set to have their own or none.
-			if ( empty( $config['main'] ) ) {
-				$menu = $config['menu'] ?? 'portfolio';
+			// Where the type appears in the admin menu: under the Portfolio
+			// menu, on its own, or nowhere.
+			$menu = $config['menu'] ?? 'portfolio';
 
-				if ( 'own' === $menu ) {
-					$args['show_in_menu'] = true;
-				} elseif ( 'hidden' === $menu ) {
-					$args['show_in_menu'] = false;
-				} else {
-					$args['show_in_menu'] = 'edit.php?post_type=' . bcp_get_setting( 'portfolio_type' );
-				}
+			if ( 'own' === $menu ) {
+				$args['show_in_menu'] = true;
+			} elseif ( 'hidden' === $menu ) {
+				$args['show_in_menu'] = false;
+			} else {
+				$args['show_in_menu'] = 'bcp-portfolio';
 			}
 
 			register_post_type( $type, apply_filters( 'bcp/portfolio/args', $args, $type ) );

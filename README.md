@@ -1,6 +1,6 @@
 # Backdrop Custom Portfolio
 
-A portfolio management plugin for ClassicPress, built for creative people such as artists, photographers, and web designers to showcase their work. It is built on the [Backdrop](https://github.com/backdrop-dev) framework.
+A post type manager for ClassicPress, built for creative people such as artists, photographers, and web designers to showcase their work. It is built on the [Backdrop](https://github.com/backdrop-dev) framework.
 
 ## Requirements
 
@@ -16,9 +16,9 @@ Works with Backdrop framework 1.x and 2.0 themes: the plugin shares the theme's 
 2. Choose the plugin's ZIP file and click **Install Now**.
 3. Click **Activate**.
 
-## Multiple post types
+## Post types
 
-Go to **Portfolio → Settings → Extra Post Types** and add a slug (used in the URL), a singular name and a plural name. Each extra type is listed under the Portfolio menu by default (a Menu setting also lets it have its own top-level menu or be hidden) and gets its own archive at `/slug/`, and shares the portfolio categories and tags. Clear a row's slug and save to remove it. Posts are never deleted when a type is removed.
+Go to **Portfolio → Post Types** and add a slug (used in the URL), a singular name and a plural name. Every post type is a row in one registry; Portfolio itself is the seeded first row. Each type is listed under the Portfolio menu by default (a Menu setting also lets it have its own top-level menu or be hidden), gets its own archive at `/portfolio/{slug}/` by default, and shares the portfolio categories and tags. Set a type's rewrite slug to a plain slug such as `themes` to put its archive at `/themes/` instead. Delete a type from the manager to remove it. Posts are never deleted when a type is removed.
 
 From code, add or change types with the `bcp/post_types` filter:
 
@@ -27,7 +27,9 @@ add_filter( 'bcp/post_types', function( $types ) {
 	$types['bcp-photography'] = [
 		'singular' => 'Photo Set',
 		'plural'   => 'Photography',
-		'rewrite'  => 'photography',
+		'rewrite'  => 'portfolio/photography',
+		'menu'     => 'portfolio',
+		'icon'     => 'dashicons-portfolio',
 	];
 
 	return $types;
